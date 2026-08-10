@@ -75,7 +75,7 @@
 <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
 
   <!-- Header -->
-  <header class="flex items-center justify-between pt-6 pb-4">
+  <header class="flex flex-wrap items-center justify-between gap-3 pt-6 pb-4">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass">EN</div>
       <div>
@@ -83,30 +83,30 @@
         <p class="text-xs text-ink-900/50 dark:text-paper-100/50 font-mono" id="todayDateLabel">—</p>
       </div>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <button id="themeToggle" aria-label="Toggle dark or light mode" class="w-10 h-10 rounded-xl glass grid place-items-center hover:brightness-110 transition">
         <span id="themeIcon">🌙</span>
       </button>
-      <button id="exportCsvBtn" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Export history as CSV">
+      <button id="exportCsvBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Export history as CSV">
         ⤓ Export CSV
       </button>
-      <button id="backupBtn" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Download JSON backup">
+      <button id="backupBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Download JSON backup">
         💾 Backup
       </button>
-      <label for="importJson" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition cursor-pointer" title="Import JSON backup">
+      <label for="importJson" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition cursor-pointer" title="Import JSON backup">
         ⤒ Import
       </label>
       <input id="importJson" type="file" accept="application/json" class="hidden">
-      <button id="pomodoroBtn" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Open Pomodoro timer">
+      <button id="pomodoroBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Open Pomodoro timer">
         ⏱ Pomodoro
       </button>
-      <button id="profileBtn" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Profile & targets">
+      <button id="profileBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Profile & targets">
         👤 Profile
       </button>
-      <button id="resetDayBtn" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
+      <button id="resetDayBtn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
         <span>↻</span> New day
       </button>
-      <button id="printBtn" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Print report">
+      <button id="printBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Print report">
         🖨 Print
       </button>
     </div>
