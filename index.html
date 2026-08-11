@@ -164,11 +164,22 @@
 
   <!-- History -->
   <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
-    <div class="flex items-center justify-between mb-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
       <h2 class="font-display font-700 text-lg">📅 Recent history</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="historyCalendarBtn" class="px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">Kalendar</button>
         <input id="historySearch" placeholder="Search history (date or module)" class="text-sm px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8" />
       </div>
+    </div>
+    <div id="historyCalendarPanel" class="hidden rounded-3xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 p-4 mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-end gap-3">
+        <label class="flex-1 text-sm">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1">Tanlangan sana</span>
+          <input id="historyDatePicker" type="date" class="w-full px-3 py-2 rounded-lg bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 text-sm">
+        </label>
+        <button id="historyDateShowBtn" class="px-4 py-2 rounded-full bg-lime-400 text-ink-950 text-sm font-semibold">Ko'rsat</button>
+      </div>
+      <div id="historyDateDetails" class="mt-4 text-sm"></div>
     </div>
     <div id="historyList" class="space-y-2 text-sm"></div>
     <p class="text-xs text-ink-900/40 dark:text-paper-100/40 mt-3" id="historyEmpty">No days completed yet — finish today's goals and tap "New day".</p>
@@ -283,6 +294,20 @@ function blankDay(){
   };
 }
 
+function defaultListeningPlan(){
+  return {
+    weeks: [
+      { day:'Monday', task:'Listening to podcasts 30 mins', score:'', done:false },
+      { day:'Tuesday', task:'Blind listening 1.2x 1.5x 1, uz 2x', score:'', done:false },
+      { day:'Wednesday', task:'Film 2 hours', score:'', done:false },
+      { day:'Thursday', task:'Write podcast 6 min BBC', score:'', done:false },
+      { day:'Friday', task:'Radio UK 1 hour', score:'', done:false },
+      { day:'Saturday', task:'Watch full test script on YouTube', score:'', done:false },
+      { day:'Sunday', task:'Meditation listening + full test', score:'', done:false },
+    ]
+  };
+}
+
 function defaultState(){
   return {
     activeDate: todayISO(),
@@ -297,7 +322,24 @@ function defaultState(){
       book3: { current:1, completed:0 },
       book4: { current:1, completed:0 },
     },
+    listeningPlan: defaultListeningPlan(),
     theme: 'dark'
+  };
+}
+
+function mergeListeningPlan(savedPlan){
+  const defPlan = defaultListeningPlan();
+  if(!savedPlan || !Array.isArray(savedPlan.weeks)) return defPlan;
+  return {
+    weeks: defPlan.weeks.map((defaultWeek, index) => {
+      const savedWeek = savedPlan.weeks[index] || {};
+      return {
+        day: savedWeek.day || defaultWeek.day,
+        task: savedWeek.task || defaultWeek.task,
+        score: savedWeek.score || '',
+        done: typeof savedWeek.done === 'boolean' ? savedWeek.done : false,
+      };
+    })
   };
 }
 
@@ -310,7 +352,8 @@ function load(){
     const def = defaultState();
     return Object.assign(def, parsed, {
       today: Object.assign(blankDay(), parsed.today || {}),
-      vocab: Object.assign(def.vocab, parsed.vocab || {})
+      vocab: Object.assign(def.vocab, parsed.vocab || {}),
+      listeningPlan: mergeListeningPlan(parsed.listeningPlan),
     });
   }catch(e){
     console.error('Could not read saved data, starting fresh.', e);
@@ -458,6 +501,8 @@ function moduleBody(m){
       </label>`;
   }
   if (m.id === 'listening') {
+    const plan = state.listeningPlan;
+    const completedDays = plan.weeks.filter(w => w.done).length;
     return `
       <div class="flex items-center gap-3 mb-3">
         <label class="flex items-center gap-2 text-xs cursor-pointer flex-1">
@@ -469,6 +514,27 @@ function moduleBody(m){
           <input type="number" min="0" max="40" data-field="listening.score" value="${t.listening.score}"
             class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
         </label>
+      </div>
+      <button type="button" data-open-weekly-plan class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-black/10 dark:bg-white/15 text-ink-900 dark:text-paper-100 mb-4">
+        1 haftalik zadaniya
+      </button>
+      <div class="space-y-3 hidden" data-weekly-plan-panel>
+        ${plan.weeks.map((week,i) => `
+          <div class="grid gap-3 sm:grid-cols-[1fr_auto] items-center rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/10 p-3">
+            <div>
+              <div class="text-[11px] uppercase tracking-[0.24em] text-ink-900/40 dark:text-paper-100/40 mb-1">${week.day || 'Day'}</div>
+              <div class="font-medium text-sm">${week.task}</div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">+ Full test score</div>
+              <input type="text" data-plan-index="${i}" data-plan-field="score" value="${week.score}"
+                class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-2 text-sm font-mono">
+              <button type="button" data-plan-index="${i}" class="rounded-full px-4 py-2 font-semibold text-sm ${week.done ? 'bg-lime-500 text-ink-950' : 'bg-black/10 dark:bg-white/15 text-ink-900 dark:text-paper-100'}">
+                ${week.done ? 'Bajardi ✓' : 'Bajardim'}
+              </button>
+            </div>
+          </div>
+        `).join('')}
       </div>`;
   }
   if (m.id === 'speaking') {
@@ -536,6 +602,18 @@ function renderModules(){
     const evt = (el.tagName === 'SELECT' || el.type === 'checkbox') ? 'change' : 'input';
     el.addEventListener(evt, onFieldChange);
   });
+  grid.querySelectorAll('[data-plan-index][data-plan-field]').forEach(el => {
+    el.addEventListener('input', onListeningPlanInput);
+  });
+  grid.querySelectorAll('button[data-plan-index]').forEach(btn => {
+    btn.addEventListener('click', onListeningPlanToggle);
+  });
+  grid.querySelectorAll('[data-open-weekly-plan]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const panel = e.currentTarget.closest('[data-module="listening"]')?.querySelector('[data-weekly-plan-panel]');
+      if(panel) panel.classList.toggle('hidden');
+    });
+  });
 }
 
 function onFieldChange(e){
@@ -551,6 +629,24 @@ function onFieldChange(e){
   renderHero();
   // update only this module's progress chip + bar without full re-render (keeps focus in inputs)
   updateModuleHeader(group);
+}
+
+function onListeningPlanInput(e){
+  const el = e.target;
+  const index = Number(el.dataset.planIndex);
+  const field = el.dataset.planField;
+  if (!Number.isInteger(index) || !field) return;
+  state.listeningPlan.weeks[index][field] = el.value;
+  save();
+}
+
+function onListeningPlanToggle(e){
+  const btn = e.currentTarget;
+  const index = Number(btn.dataset.planIndex);
+  if (!Number.isInteger(index)) return;
+  state.listeningPlan.weeks[index].done = !state.listeningPlan.weeks[index].done;
+  save();
+  renderModules();
 }
 
 function updateModuleHeader(id){
@@ -669,7 +765,69 @@ function renderHistory(){
   }).join('');
 
   // history entries already include details for recent-period summaries
+}
 
+function formatDateLabel(dateISO){
+  const d = new Date(dateISO + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+}
+
+function getDetailsForDate(dateISO){
+  if (dateISO === state.activeDate) {
+    return { ...state.today, current: true };
+  }
+  const entry = state.history.find(h => h.date === dateISO);
+  return entry ? entry.details : null;
+}
+
+function renderHistoryDateDetails(dateISO){
+  const target = document.getElementById('historyDateDetails');
+  if (!dateISO) {
+    target.innerHTML = '<div class="text-ink-900/50 dark:text-paper-100/50">Iltimos, sanani tanlang.</div>';
+    return;
+  }
+  const details = getDetailsForDate(dateISO);
+  if (!details) {
+    target.innerHTML = `<div class="text-ink-900/50 dark:text-paper-100/50">${formatDateLabel(dateISO)} uchun yozuv topilmadi.</div>`;
+    return;
+  }
+
+  const reading = details.reading || {};
+  const writing = details.writing || {};
+  const listening = details.listening || {};
+  const speaking = details.speaking || {};
+  const bbcted = details.bbcted || {};
+
+  target.innerHTML = `
+    <div class="rounded-3xl border border-black/10 dark:border-white/10 bg-paper-50 dark:bg-ink-950 p-4">
+      <div class="font-semibold text-sm mb-3">${formatDateLabel(dateISO)}</div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Reading</div>
+          <div class="font-medium text-sm">${reading.passages || 0} passages</div>
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${reading.score || '—'}</div>
+        </div>
+        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Writing</div>
+          <div class="font-medium text-sm">${writing.completed ? 'Completed' : 'Not completed'}</div>
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Word count: ${writing.wordCount || '—'}</div>
+        </div>
+        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Listening</div>
+          <div class="font-medium text-sm">${listening.completed ? 'Completed' : 'Not completed'}</div>
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${listening.score || '—'}</div>
+        </div>
+        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Speaking</div>
+          <div class="font-medium text-sm">${speaking.questions || 0} questions</div>
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Topic: ${speaking.topic || '—'}</div>
+        </div>
+        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10 sm:col-span-2">
+          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">BBC + TED</div>
+          <div class="font-medium text-sm">BBC: ${bbcted.bbc || 0}, TED: ${bbcted.ted || 0}</div>
+        </div>
+      </div>
+    </div>`;
 }
 
 /* ---------------------------------------------------------
@@ -709,6 +867,8 @@ function renderAll(){
   renderModules();
   renderVocab();
   renderHistory();
+  const datePicker = document.getElementById('historyDatePicker');
+  if (datePicker) datePicker.value = state.activeDate;
 }
 renderAll();
 
@@ -914,6 +1074,15 @@ function notify(msg){ if('Notification' in window){ if(Notification.permission==
 
 // Print button
 document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+document.getElementById('historyCalendarBtn').addEventListener('click', () => {
+  document.getElementById('historyCalendarPanel').classList.toggle('hidden');
+});
+
+document.getElementById('historyDateShowBtn').addEventListener('click', () => {
+  const date = document.getElementById('historyDatePicker').value;
+  renderHistoryDateDetails(date);
+});
 
 // History search/filter
 document.getElementById('historySearch').addEventListener('input', (e)=>{
