@@ -68,6 +68,57 @@
     outline: 2px solid #C4F135; outline-offset: 2px;
   }
   .module-card { border-top: 3px solid var(--accent, #C4F135); }
+  /* Mobile-friendly adjustments */
+  @media (max-width: 640px) {
+    /* Slightly larger touch targets and spacing */
+    .touch-friendly button, .touch-friendly .rounded-xl, .touch-friendly .rounded-lg {
+      padding-top: 0.6rem !important;
+      padding-bottom: 0.6rem !important;
+      padding-left: 0.9rem !important;
+      padding-right: 0.9rem !important;
+      border-radius: 0.75rem !important;
+    }
+
+    /* Make inputs easier to tap */
+    input[type="number"], input[type="text"], select, button {
+      font-size: 16px !important;
+      line-height: 1.2 !important;
+      min-height: 44px !important;
+    }
+
+    /* Slightly more roomy module cards and grid gap */
+    .module-card, .glass { padding: 1.25rem !important; }
+    #modulesGrid { gap: 1rem !important; }
+
+    /* Make hero ring scale on small screens so text doesn't overflow */
+    #ringWrap { width: 28vw !important; height: 28vw !important; max-width: 160px !important; max-height: 160px !important; }
+    #ringWrap .ring-track > div { width: 76% !important; height: 76% !important; }
+
+    /* Ensure modals are comfortably sized on phones */
+    .modal-content { max-width: 96% !important; width: 96% !important; padding: 16px !important; }
+
+    /* History items should wrap neatly */
+    #historyList .flex { gap: 0.5rem !important; }
+
+    /* Vocab grid: single column on small screens */
+    #vocabGrid { grid-template-columns: 1fr !important; }
+
+    /* Prevent fixed bottom button from covering content too aggressively */
+    #resetDayBtnMobile { right: 1rem !important; left: auto !important; }
+  }
+  /* Notification permission modal */
+  .notif-perm-modal .modal-content {
+    max-width: 420px; width: 92%; border-radius: 16px; padding: 18px; background: var(--bg, rgba(255,255,255,0.96));
+    color: var(--fg, #0A0D1A);
+  }
+  .notif-perm-modal .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px }
+  .notif-perm-modal .btn-allow { background:#C4F135; color:#081018; padding:8px 14px; border-radius:10px; font-weight:600 }
+  .notif-perm-modal .btn-cancel { background:transparent; border:1px solid rgba(0,0,0,0.08); padding:8px 12px; border-radius:10px }
+  /* Confirm modal styles */
+  .confirm-modal .modal-wrap { animation: fadeIn 180ms ease both; }
+  .confirm-modal .modal-card { transform: translateY(8px); animation: slideUp 220ms cubic-bezier(.2,.9,.25,1) both; }
+  @keyframes slideUp { from { transform: translateY(18px) scale(.98); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
 </style>
 </head>
 <body class="bg-paper-50 dark:bg-ink-950 text-ink-900 dark:text-paper-100 font-body transition-colors duration-300 min-h-screen">
@@ -243,6 +294,42 @@
       </div>
       <div class="flex justify-end mt-4">
         <button id="closePom" class="px-3 py-2 rounded-lg bg-black/5">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification permission modal (custom, centered) -->
+  <div id="notifPermissionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 notif-perm-modal">
+    <div class="modal-content bg-paper-50 dark:bg-ink-950 rounded-2xl p-5">
+      <div class="flex items-start gap-3">
+        <div class="text-2xl">🔔</div>
+        <div class="flex-1">
+          <div class="font-700 text-lg">Enable notifications?</div>
+          <div id="notifPermMessage" class="text-sm text-ink-900/60 dark:text-paper-100/60 mt-1">Get gentle reminders for pomodoro and study milestones.</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="notifCancelBtn" class="btn-cancel">Not now</button>
+        <button id="notifAllowBtn" class="btn-allow">Allow notifications</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic confirm modal (centered, animated) -->
+  <div id="confirmModal" class="fixed inset-0 z-60 hidden items-center justify-center bg-black/50 confirm-modal">
+    <div class="modal-wrap w-full max-w-md px-4">
+      <div class="modal-card modal-content bg-paper-50 dark:bg-ink-950 rounded-2xl p-5">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl">❗</div>
+          <div class="flex-1">
+            <div id="confirmMessage" class="font-700 text-base">Are you sure?</div>
+            <div id="confirmSub" class="text-sm text-ink-900/60 dark:text-paper-100/60 mt-1">This action cannot be undone.</div>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-4">
+          <button id="confirmCancelBtn" class="btn-cancel">Cancel</button>
+          <button id="confirmOkBtn" class="btn-allow">Delete</button>
+        </div>
       </div>
     </div>
   </div>
@@ -926,13 +1013,34 @@ function renderHistory(){
   list.innerHTML = state.history.map(h => {
     const d = new Date(h.date+'T00:00:00').toLocaleDateString('en-US',{month:'short', day:'numeric'});
     return `<div class="flex items-center justify-between px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5">
-      <span class="font-medium">${d}</span>
+      <div class="flex items-center gap-3">
+        <button class="history-delete-btn text-ink-900/50 dark:text-paper-100/50 hover:text-red-400 transition" aria-label="Delete entry" data-date="${h.date}" title="Delete">
+          🗑️
+        </button>
+        <span class="font-medium">${d}</span>
+      </div>
       <div class="flex items-center gap-3">
         <span class="font-mono text-xs">${h.pct}%</span>
         <span class="${h.met ? 'text-lime-500' : 'text-ink-900/40 dark:text-paper-100/40'} text-xs font-semibold">${h.met ? '✓ goal met' : '— missed'}</span>
       </div>
     </div>`;
   }).join('');
+
+  // wire delete buttons for each history item
+  list.querySelectorAll('.history-delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const dateToRemove = btn.dataset.date;
+      if (!dateToRemove) return;
+      // show custom confirm modal
+      showConfirm('Delete this history entry for ' + new Date(dateToRemove+'T00:00:00').toLocaleDateString() + '?', () => {
+        state.history = state.history.filter(h => h.date !== dateToRemove);
+        save();
+        renderHistory();
+        renderPeriodSummary(3);
+      });
+    });
+  });
 
   // history entries already include details for recent-period summaries
 }
@@ -1242,6 +1350,75 @@ document.getElementById('pomReset').addEventListener('click', () => { if(pomInte
 
 // Notifications / reminders helper
 function notify(msg){ if('Notification' in window){ if(Notification.permission==='granted'){ new Notification(msg); } else if(Notification.permission!=='denied'){ Notification.requestPermission().then(p=>{ if(p==='granted') new Notification(msg); }); } } else { alert(msg); } }
+
+// Custom notification flow: show a centered modal explaining permission
+let _pendingNotificationMessage = '';
+function showNotificationPermissionModal(message){
+  _pendingNotificationMessage = message || '';
+  const modal = document.getElementById('notifPermissionModal');
+  const msgEl = document.getElementById('notifPermMessage');
+  if(msgEl) msgEl.textContent = message || 'Get gentle reminders for pomodoro and study milestones.';
+  modal.classList.remove('hidden');
+}
+
+document.getElementById('notifAllowBtn').addEventListener('click', () => {
+  const modal = document.getElementById('notifPermissionModal');
+  modal.classList.add('hidden');
+  // request browser permission (this will trigger native prompt)
+  Notification.requestPermission().then(p => {
+    if(p === 'granted'){
+      try{ new Notification(_pendingNotificationMessage || 'Notifications enabled'); }
+      catch(e){ /* ignore */ }
+    } else {
+      // user denied or dismissed — no further action
+    }
+    _pendingNotificationMessage = '';
+  }).catch(err => { _pendingNotificationMessage = ''; });
+});
+
+document.getElementById('notifCancelBtn').addEventListener('click', () => {
+  const modal = document.getElementById('notifPermissionModal');
+  modal.classList.add('hidden');
+  _pendingNotificationMessage = '';
+});
+
+function notify(msg){
+  if (!('Notification' in window)) { alert(msg); return; }
+  if (Notification.permission === 'granted') {
+    try{ new Notification(msg); } catch(e){ alert(msg); }
+    return;
+  }
+  // If denied, fall back to alert
+  if (Notification.permission === 'denied') { alert(msg); return; }
+  // permission is 'default' — show a friendly centered modal first
+  showNotificationPermissionModal(msg || 'You have a new reminder');
+}
+
+// Generic confirm modal helpers
+let _confirmCallback = null;
+function showConfirm(message, onConfirm){
+  _confirmCallback = onConfirm || null;
+  const modal = document.getElementById('confirmModal');
+  const msgEl = document.getElementById('confirmMessage');
+  if(msgEl) msgEl.textContent = message || 'Are you sure?';
+  modal.classList.remove('hidden');
+}
+
+function hideConfirm(){
+  const modal = document.getElementById('confirmModal');
+  modal.classList.add('hidden');
+  _confirmCallback = null;
+}
+
+document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+  hideConfirm();
+});
+
+document.getElementById('confirmOkBtn').addEventListener('click', () => {
+  const cb = _confirmCallback;
+  hideConfirm();
+  if(typeof cb === 'function') cb();
+});
 
 // Print button
 document.getElementById('printBtn').addEventListener('click', () => window.print());
