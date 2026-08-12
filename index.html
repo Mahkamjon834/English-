@@ -77,9 +77,12 @@
   <!-- Header -->
   <header class="flex flex-wrap items-center justify-between gap-3 pt-6 pb-4">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass">EN</div>
+      <div class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass">M.C</div>
       <div>
-        <h1 class="font-display font-700 text-lg sm:text-xl leading-tight">Study Log</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="font-display font-700 text-lg sm:text-xl leading-tight">Study Log</h1>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-lime-400/10 border border-lime-400/30 text-[10px] font-semibold uppercase tracking-[0.18em] text-lime-500">MC</span>
+        </div>
         <p class="text-xs text-ink-900/50 dark:text-paper-100/50 font-mono" id="todayDateLabel">—</p>
       </div>
     </div>
@@ -111,6 +114,7 @@
       </button>
     </div>
   </header>
+  
 
   <!-- Hero: ring + streak -->
   <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
@@ -252,24 +256,24 @@ const STORAGE_KEY = 'english-study-log-v1';
 const UNITS_PER_BOOK = 30;
 
 const MODULES = [
-  { id:'reading', icon:'📖', name:'Reading', accent:'#5B8DEF', target:2, targetLabel:'2 passages',
+  { id:'reading', icon:'📖', name:'Reading', accent:'#5B8DEF', target:13, targetLabel:'13 tasks',
     links:[
-      {label:'KeyProvider IELTS — Reading 2', url:'https://keyproviderielts.com/en/exams/category/reading-2'},
+      {label:'KeyProvider IELTS — Reading 2', url:'https://keyproviderielts.com/en/exams/category/reading-2', fill:{section:'Part 1', passages:10, score:10}},
       {label:'IELTS Online Tests', url:'https://www.ieltsonlinetests.com/reading-tests'}
     ]},
   { id:'writing', icon:'✍️', name:'Writing', accent:'#B98CE8', target:1, targetLabel:'1 task',
     links:[
-      {label:'KeyProvider IELTS — Writing 3', url:'https://keyproviderielts.com/en/exams/category/writing-3'},
+      {label:'KeyProvider IELTS — Writing 3', url:'https://keyproviderielts.com/en/exams/category/writing-3', fill:{task:'Task 1', wordCount:150, completed:true}},
       {label:'Write & Improve', url:'https://writeandimprove.com/'}
     ]},
-  { id:'listening', icon:'🎧', name:'Listening', accent:'#43C6AC', target:1, targetLabel:'1 full test',
+  { id:'listening', icon:'🎧', name:'Listening', accent:'#43C6AC', target:1, targetLabel:'1 part / full test',
     links:[
-      {label:'KeyProvider IELTS — Listening 1', url:'https://keyproviderielts.com/en/exams/category/listening-1'},
+      {label:'KeyProvider IELTS — Listening 1', url:'https://keyproviderielts.com/en/exams/category/listening-1', fill:{section:'Part 1', score:10}},
       {label:'CrackIELTS', url:'https://crackielts.com/'}
     ]},
   { id:'speaking', icon:'🎙️', name:'Speaking', accent:'#FF9F5A', target:15, targetLabel:'15 questions',
     links:[
-      {label:'KeyProvider IELTS — Speaking 4', url:'https://keyproviderielts.com/en/exams/category/speaking-4'},
+      {label:'KeyProvider IELTS — Speaking 4', url:'https://keyproviderielts.com/en/exams/category/speaking-4', fill:{questions:10, topic:'Speaking practice'}},
       {label:'YouTube — Speaking Mock', url:'https://www.youtube.com/results?search_query=IELTS+Speaking+Mock+Test'}
     ]},
   { id:'bbcted', icon:'🌐', name:'BBC & TED', accent:'#4ECDC4', target:6, targetLabel:'3 BBC + 3 TED',
@@ -286,9 +290,9 @@ function todayISO(){
 
 function blankDay(){
   return {
-    reading: { passages:0, score:'' },
+    reading: { passages:0, score:'', section:'Part 1' },
     writing: { task:'Task 1', wordCount:'', completed:false },
-    listening: { completed:false, score:'' },
+    listening: { section:'Part 1', completed:false, score:'' },
     speaking: { questions:0, topic:'' },
     bbcted: { bbc:0, ted:0 },
   };
@@ -410,12 +414,49 @@ if (state.activeDate !== todayISO()) {
 /* ---------------------------------------------------------
    PROGRESS CALCULATION
 --------------------------------------------------------- */
+function writingProgress(task, wordCount){
+  const words = Number(wordCount) || 0;
+  if (task === 'Task 2') {
+    if (words >= 250) return 0.6;
+    if (words >= 200) return 0.5;
+    if (words >= 180) return 0.4;
+    if (words >= 150) return 0.35;
+    if (words >= 100) return 0.25;
+    if (words >= 50) return 0.15;
+    return 0;
+  }
+
+  if (words >= 150) return 0.4;
+  if (words >= 130) return 0.35;
+  if (words >= 100) return 0.25;
+  if (words >= 80) return 0.2;
+  if (words >= 50) return 0.15;
+  if (words >= 20) return 0.1;
+  return 0;
+}
+
 function moduleProgress(id){
   const t = state.today;
   switch(id){
-    case 'reading': return Math.min(1, (t.reading.passages||0) / 2);
-    case 'writing': return t.writing.completed ? 1 : 0;
-    case 'listening': return t.listening.completed ? 1 : 0;
+    case 'reading': {
+      const selectedValue = Number(t.reading.passages) || 0;
+      return Math.min(1, selectedValue / 40);
+    }
+    case 'writing': {
+      const task = t.writing.task || 'Task 1';
+      const taskProgress = writingProgress(task, t.writing.wordCount);
+      const checkboxProgress = t.writing.completed ? 1 : 0;
+      return Math.max(taskProgress, checkboxProgress);
+    }
+    case 'listening': {
+      const score = Number(t.listening.score) || 0;
+      const scoreProgress = Math.min(1, score / 40);
+      const weeklyProgress = state.listeningPlan
+        ? state.listeningPlan.weeks.filter(w => w.done).length / state.listeningPlan.weeks.length
+        : 0;
+      const completedProgress = t.listening.completed ? 1 : 0;
+      return Math.max(scoreProgress, weeklyProgress, completedProgress);
+    }
     case 'speaking': return Math.min(1, (t.speaking.questions||0) / 15);
     case 'bbcted': return Math.min(1, ((t.bbcted.bbc||0) + (t.bbcted.ted||0)) / 6);
     default: return 0;
@@ -425,6 +466,40 @@ function moduleProgress(id){
 function computeOverallPct(){
   const sum = MODULES.reduce((acc,m) => acc + moduleProgress(m.id), 0);
   return Math.round((sum / MODULES.length) * 100);
+}
+
+function readingTaskMax(section){
+  const limits = {
+    'Part 1': 13,
+    'Part 2': 13,
+    'Part 3': 14,
+    'Full reading': 40,
+  };
+  return limits[section] || 13;
+}
+
+function readingMaxScore(section){
+  return 40;
+}
+
+function readingTargetLabel(section){
+  const labels = {
+    'Part 1': '40 total',
+    'Part 2': '40 total',
+    'Part 3': '40 total',
+    'Full reading': '40 total',
+  };
+  return labels[section] || '40 total';
+}
+
+function readingTasksLabel(section){
+  const labels = {
+    'Part 1': 'Part 1 tasks completed',
+    'Part 2': 'Part 2 tasks completed',
+    'Part 3': 'Part 3 tasks completed',
+    'Full reading': 'Full reading passages completed',
+  };
+  return labels[section] || 'Passages completed';
 }
 
 /* ---------------------------------------------------------
@@ -454,27 +529,74 @@ function renderHero(){
    RENDER: MODULE CARDS
 --------------------------------------------------------- */
 function linkButtons(links){
-  return links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer"
+  return links.map(l => {
+    const fill = l.fill ? ` data-fill='${JSON.stringify(l.fill).replace(/'/g, '&apos;')}'` : '';
+    return `<a href="${l.url}" target="_blank" rel="noopener noreferrer"${fill}
       class="text-[11px] px-2.5 py-1.5 rounded-lg bg-black/5 dark:bg-white/8 hover:bg-black/10 dark:hover:bg-white/15 transition font-medium whitespace-nowrap">
       ${l.label} ↗
-    </a>`).join('');
+    </a>`;
+  }).join('');
+}
+
+function applyLinkFill(moduleId, fill){
+  if (!fill || Object.keys(fill).length === 0) return;
+  if (moduleId === 'reading') {
+    state.today.reading.section = fill.section || state.today.reading.section || 'Part 1';
+    state.today.reading.passages = Number(fill.passages) || Number(state.today.reading.passages) || 0;
+    state.today.reading.score = Number(fill.score) || Number(state.today.reading.score) || 0;
+  }
+  if (moduleId === 'writing') {
+    state.today.writing.task = fill.task || state.today.writing.task || 'Task 1';
+    state.today.writing.wordCount = Number(fill.wordCount) || Number(state.today.writing.wordCount) || 0;
+    state.today.writing.completed = !!fill.completed || !!state.today.writing.completed;
+  }
+  if (moduleId === 'listening') {
+    state.today.listening.section = fill.section || state.today.listening.section || 'Part 1';
+    state.today.listening.score = Number(fill.score) || Number(state.today.listening.score) || 0;
+    state.today.listening.completed = !!fill.completed || !!state.today.listening.completed;
+  }
+  if (moduleId === 'speaking') {
+    state.today.speaking.questions = Number(fill.questions) || Number(state.today.speaking.questions) || 0;
+    state.today.speaking.topic = fill.topic || state.today.speaking.topic || '';
+  }
+  save();
+  renderAll();
 }
 
 function moduleBody(m){
   const t = state.today;
   if (m.id === 'reading') {
+    const section = t.reading.section || 'Part 1';
+    const maxTasks = readingTaskMax(section);
+    const maxScore = readingMaxScore(section);
+    const taskLabel = readingTasksLabel(section);
     return `
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <label class="text-xs">
+          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Reading section</span>
+          <select data-field="reading.section" class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
+            <option ${section==='Part 1'?'selected':''}>Part 1</option>
+            <option ${section==='Part 2'?'selected':''}>Part 2</option>
+            <option ${section==='Part 3'?'selected':''}>Part 3</option>
+            <option ${section==='Full reading'?'selected':''}>Full reading</option>
+          </select>
+          <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50 mt-2">Part 1 = 13 questions, Part 2 = 13 questions, Part 3 = 14 questions, Full reading = 40 total.</div>
+        </label>
+        <label class="text-xs">
+          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">${taskLabel}</span>
+          <input type="number" min="0" max="${maxTasks}" data-field="reading.passages" value="${t.reading.passages}"
+            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
+        </label>
+      </div>
       <div class="flex items-center gap-3 mb-3">
         <label class="text-xs flex-1">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Passages completed</span>
-          <input type="number" min="0" max="10" data-field="reading.passages" value="${t.reading.passages}"
+          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Score / ${maxScore}</span>
+          <input type="number" min="0" max="${maxScore}" data-field="reading.score" value="${t.reading.score}"
             class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
         </label>
-        <label class="text-xs flex-1">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Score / 13</span>
-          <input type="number" min="0" max="13" data-field="reading.score" value="${t.reading.score}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
+        <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 leading-5">
+          Use the correct section score. Full reading is out of 40.
+        </div>
       </div>`;
   }
   
@@ -502,18 +624,33 @@ function moduleBody(m){
   }
   if (m.id === 'listening') {
     const plan = state.listeningPlan;
-    const completedDays = plan.weeks.filter(w => w.done).length;
+    const section = t.listening.section || 'Part 1';
     return `
-      <div class="flex items-center gap-3 mb-3">
-        <label class="flex items-center gap-2 text-xs cursor-pointer flex-1">
-          <input type="checkbox" class="chk" style="--chk-color:${m.accent}" data-field="listening.completed" ${t.listening.completed?'checked':''}>
-          <span>Full practice test done</span>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <label class="text-xs">
+          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Listening section</span>
+          <select data-field="listening.section" class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
+            <option ${section==='Part 1'?'selected':''}>Part 1</option>
+            <option ${section==='Part 2'?'selected':''}>Part 2</option>
+            <option ${section==='Part 3'?'selected':''}>Part 3</option>
+            <option ${section==='Part 4'?'selected':''}>Part 4</option>
+            <option ${section==='Full test'?'selected':''}>Full test</option>
+          </select>
         </label>
-        <label class="text-xs flex-1">
+        <label class="flex items-center gap-2 text-xs cursor-pointer mt-6">
+          <input type="checkbox" class="chk" style="--chk-color:${m.accent}" data-field="listening.completed" ${t.listening.completed?'checked':''}>
+          <span>Completed</span>
+        </label>
+      </div>
+      <div class="mb-3">
+        <label class="text-xs block">
           <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Score / 40</span>
           <input type="number" min="0" max="40" data-field="listening.score" value="${t.listening.score}"
             class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
         </label>
+      </div>
+      <div class="mb-3 text-[11px] text-ink-900/50 dark:text-paper-100/50">
+        ${section} • Part 1 • Part 2 • Part 3 • Part 4 • Full test
       </div>
       <button type="button" data-open-weekly-plan class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-black/10 dark:bg-white/15 text-ink-900 dark:text-paper-100 mb-4">
         1 haftalik zadaniya
@@ -580,7 +717,7 @@ function renderModules(){
       <div class="flex items-start justify-between mb-3">
         <div>
           <h3 class="font-display font-700 text-base flex items-center gap-2">${m.icon} ${m.name}</h3>
-          <p class="text-[11px] text-ink-900/45 dark:text-paper-100/45">Target: ${m.targetLabel}</p>
+          <p class="text-[11px] text-ink-900/45 dark:text-paper-100/45">Target: ${m.id === 'reading' ? readingTargetLabel(state.today.reading.section || 'Part 1') : m.targetLabel}</p>
         </div>
         <div class="text-right">
           <div class="font-mono font-700 text-lg" style="color:${m.accent}">${pct}%</div>
@@ -601,6 +738,39 @@ function renderModules(){
   grid.querySelectorAll('[data-field]').forEach(el => {
     const evt = (el.tagName === 'SELECT' || el.type === 'checkbox') ? 'change' : 'input';
     el.addEventListener(evt, onFieldChange);
+  });
+
+  grid.querySelectorAll('a[data-fill]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const fill = link.dataset.fill ? JSON.parse(link.dataset.fill.replace(/&apos;/g, "'")) : {};
+      if (!fill || Object.keys(fill).length === 0) return;
+
+      const targetModule = link.closest('[data-module]')?.dataset.module;
+      if (targetModule === 'reading') {
+        state.today.reading.section = fill.section || state.today.reading.section || 'Part 1';
+        state.today.reading.passages = Number(fill.passages) || Number(state.today.reading.passages) || 0;
+        state.today.reading.score = Number(fill.score) || Number(state.today.reading.score) || 0;
+      }
+      if (targetModule === 'writing') {
+        state.today.writing.task = fill.task || state.today.writing.task || 'Task 1';
+        state.today.writing.wordCount = Number(fill.wordCount) || Number(state.today.writing.wordCount) || 0;
+        state.today.writing.completed = !!fill.completed || !!state.today.writing.completed;
+      }
+      if (targetModule === 'listening') {
+        state.today.listening.section = fill.section || state.today.listening.section || 'Part 1';
+        state.today.listening.score = Number(fill.score) || Number(state.today.listening.score) || 0;
+        state.today.listening.completed = !!fill.completed || !!state.today.listening.completed;
+      }
+      if (targetModule === 'speaking') {
+        state.today.speaking.questions = Number(fill.questions) || Number(state.today.speaking.questions) || 0;
+        state.today.speaking.topic = fill.topic || state.today.speaking.topic || '';
+      }
+
+      save();
+      renderAll();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+      e.preventDefault();
+    });
   });
   grid.querySelectorAll('[data-plan-index][data-plan-field]').forEach(el => {
     el.addEventListener('input', onListeningPlanInput);
@@ -804,7 +974,7 @@ function renderHistoryDateDetails(dateISO){
       <div class="grid gap-3 sm:grid-cols-2">
         <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
           <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Reading</div>
-          <div class="font-medium text-sm">${reading.passages || 0} passages</div>
+          <div class="font-medium text-sm">${reading.section || 'Part 1'} — ${reading.passages || 0} passages</div>
           <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${reading.score || '—'}</div>
         </div>
         <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
@@ -814,7 +984,7 @@ function renderHistoryDateDetails(dateISO){
         </div>
         <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
           <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Listening</div>
-          <div class="font-medium text-sm">${listening.completed ? 'Completed' : 'Not completed'}</div>
+          <div class="font-medium text-sm">${listening.section || 'Part 1'} ${listening.completed ? '• Completed' : '• Not completed'}</div>
           <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${listening.score || '—'}</div>
         </div>
         <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
@@ -969,7 +1139,7 @@ function buildHistoryCSV(){
   if(!state.history || !state.history.length) return null;
   const headers = [
     'date', 'pct', 'met',
-    'reading_passages','reading_score',
+    'reading_section','reading_passages','reading_score',
     'writing_completed','writing_wordCount',
     'listening_completed','listening_score',
     'speaking_questions',
@@ -981,6 +1151,7 @@ function buildHistoryCSV(){
     const pct = h.pct != null ? h.pct : '';
     const met = h.met ? '1' : '0';
     const det = h.details || {};
+    const r_section = det.reading ? (det.reading.section||'Part 1') : '';
     const r_pass = det.reading ? (det.reading.passages||0) : '';
     const r_score = det.reading ? (det.reading.score||'') : '';
     const w_comp = det.writing ? (det.writing.completed ? '1' : '0') : '';
@@ -990,7 +1161,7 @@ function buildHistoryCSV(){
     const s_q = det.speaking ? (det.speaking.questions||'') : '';
     const b_bbc = det.bbcted ? (det.bbcted.bbc||'') : '';
     const b_ted = det.bbcted ? (det.bbcted.ted||'') : '';
-    const row = [d,pct,met,r_pass,r_score,w_comp,w_wc,l_comp,l_score,s_q,b_bbc,b_ted]
+    const row = [d,pct,met,r_section,r_pass,r_score,w_comp,w_wc,l_comp,l_score,s_q,b_bbc,b_ted]
       .map(v => typeof v === 'string' ? '"'+v.replace(/"/g,'""')+'"' : v)
       .join(',');
     rows.push(row);
