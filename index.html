@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Log — English & IELTS Tracker</title>
+<title>Study Log — IELTS & English Skill Tracker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
@@ -68,45 +68,28 @@
     outline: 2px solid #C4F135; outline-offset: 2px;
   }
   .module-card { border-top: 3px solid var(--accent, #C4F135); }
-  /* Mobile-friendly adjustments */
+  .nav-pill-active {
+    background: rgba(196, 241, 53, 0.18);
+    border-color: rgba(196, 241, 53, 0.5);
+    color: #C4F135;
+  }
   @media (max-width: 640px) {
-    /* Slightly larger touch targets and spacing */
     .touch-friendly button, .touch-friendly .rounded-xl, .touch-friendly .rounded-lg {
       padding-top: 0.6rem !important;
       padding-bottom: 0.6rem !important;
       padding-left: 0.9rem !important;
       padding-right: 0.9rem !important;
-      border-radius: 0.75rem !important;
     }
-
-    /* Make inputs easier to tap */
     input[type="number"], input[type="text"], select, button {
       font-size: 16px !important;
       line-height: 1.2 !important;
       min-height: 44px !important;
     }
-
-    /* Slightly more roomy module cards and grid gap */
     .module-card, .glass { padding: 1.25rem !important; }
-    #modulesGrid { gap: 1rem !important; }
-
-    /* Make hero ring scale on small screens so text doesn't overflow */
     #ringWrap { width: 28vw !important; height: 28vw !important; max-width: 160px !important; max-height: 160px !important; }
     #ringWrap .ring-track > div { width: 76% !important; height: 76% !important; }
-
-    /* Ensure modals are comfortably sized on phones */
     .modal-content { max-width: 96% !important; width: 96% !important; padding: 16px !important; }
-
-    /* History items should wrap neatly */
-    #historyList .flex { gap: 0.5rem !important; }
-
-    /* Vocab grid: single column on small screens */
-    #vocabGrid { grid-template-columns: 1fr !important; }
-
-    /* Prevent fixed bottom button from covering content too aggressively */
-    #resetDayBtnMobile { right: 1rem !important; left: auto !important; }
   }
-  /* Notification permission modal */
   .notif-perm-modal .modal-content {
     max-width: 420px; width: 92%; border-radius: 16px; padding: 18px; background: var(--bg, rgba(255,255,255,0.96));
     color: var(--fg, #0A0D1A);
@@ -114,7 +97,6 @@
   .notif-perm-modal .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px }
   .notif-perm-modal .btn-allow { background:#C4F135; color:#081018; padding:8px 14px; border-radius:10px; font-weight:600 }
   .notif-perm-modal .btn-cancel { background:transparent; border:1px solid rgba(0,0,0,0.08); padding:8px 12px; border-radius:10px }
-  /* Confirm modal styles */
   .confirm-modal .modal-wrap { animation: fadeIn 180ms ease both; }
   .confirm-modal .modal-card { transform: translateY(8px); animation: slideUp 220ms cubic-bezier(.2,.9,.25,1) both; }
   @keyframes slideUp { from { transform: translateY(18px) scale(.98); opacity:0 } to { transform: translateY(0) scale(1); opacity:1 } }
@@ -125,14 +107,14 @@
 
 <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
 
-  <!-- Header -->
-  <header class="flex flex-wrap items-center justify-between gap-3 pt-6 pb-4">
+  <!-- Top Bar & Header -->
+  <header class="flex flex-wrap items-center justify-between gap-3 pt-6 pb-3">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass">M.C</div>
+      <a href="#home" class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass hover:scale-105 transition">M.C</a>
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-display font-700 text-lg sm:text-xl leading-tight">Study Log</h1>
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-lime-400/10 border border-lime-400/30 text-[10px] font-semibold uppercase tracking-[0.18em] text-lime-500">MC</span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-lime-400/10 border border-lime-400/30 text-[10px] font-semibold uppercase tracking-[0.18em] text-lime-500">IELTS Pro</span>
         </div>
         <p class="text-xs text-ink-900/50 dark:text-paper-100/50 font-mono" id="todayDateLabel">—</p>
       </div>
@@ -165,10 +147,19 @@
       </button>
     </div>
   </header>
-  
 
-  <!-- Hero: ring + streak -->
-  <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
+  <!-- BREADCRUMB & ROUTE NAVIGATION CONTAINER -->
+  <nav class="glass rounded-2xl p-3 mb-6 flex flex-wrap items-center justify-between gap-3 shadow-glass" aria-label="Breadcrumb">
+    <ol class="flex items-center flex-wrap gap-1.5 text-xs sm:text-sm" id="breadcrumbTrail">
+      <!-- Dynamic Breadcrumb items will be rendered here -->
+    </ol>
+    <div class="flex items-center gap-1 overflow-x-auto py-1 max-w-full" id="routeNavTabs">
+      <!-- Quick tabs for modules -->
+    </div>
+  </nav>
+
+  <!-- Hero: ring + streak (Visible on Home dashboard) -->
+  <section id="heroSection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
     <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
       <div class="ring-wrap relative w-36 h-36 sm:w-40 sm:h-40 shrink-0" id="ringWrap" style="--ring-color:#C4F135;">
         <div class="ring-track w-full h-full rounded-full grid place-items-center">
@@ -193,17 +184,20 @@
             <span class="font-mono font-700 text-sm" id="bestStreak">0</span>
           </div>
         </div>
-        <p class="text-sm text-ink-900/60 dark:text-paper-100/60 mb-3">Daily minimums — hit all six to keep your streak alive.</p>
+        <p class="text-sm text-ink-900/60 dark:text-paper-100/60 mb-3">Daily target status — complete parts across modules to reach 100%.</p>
         <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="miniTargets"></div>
       </div>
     </div>
   </section>
 
-  <!-- Modules grid -->
+  <!-- MODULES VIEW / GRID -->
   <section class="grid sm:grid-cols-2 gap-5 mb-6" id="modulesGrid"></section>
 
+  <!-- DETAILED ROUTE VIEW (For focused Reading, Writing, Listening, Speaking Part details) -->
+  <section id="focusedRouteSection" class="hidden mb-6"></section>
+
   <!-- Vocabulary tracker -->
-  <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6 module-card" style="--accent:#FF6FA8;">
+  <section id="vocabSection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6 module-card" style="--accent:#FF6FA8;">
     <div class="flex items-center justify-between mb-1">
       <h2 class="font-display font-700 text-lg flex items-center gap-2">📚 4000 Essential Words — Vocabulary Tracker</h2>
       <div class="text-right">
@@ -218,7 +212,7 @@
   </section>
 
   <!-- History -->
-  <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
+  <section id="historySection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
       <h2 class="font-display font-700 text-lg">📅 Recent history</h2>
       <div class="flex flex-wrap items-center gap-2">
@@ -240,8 +234,8 @@
     <p class="text-xs text-ink-900/40 dark:text-paper-100/40 mt-3" id="historyEmpty">No days completed yet — finish today's goals and tap "New day".</p>
   </section>
 
-  <!-- Summary by period (last 3 days, 7 days, etc.) -->
-  <section class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
+  <!-- Summary by period -->
+  <section id="summarySection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
     <h2 class="font-display font-700 text-lg mb-4">📊 Summary by period</h2>
     <div class="flex flex-wrap gap-2 mb-4">
       <button data-period="3" class="period-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-lime-400/20 border border-lime-400/50 text-lime-500">Last 3 days</button>
@@ -250,8 +244,6 @@
     </div>
     <div id="periodSummary" class="grid sm:grid-cols-2 gap-3 text-sm"></div>
   </section>
-
-  
 
   <button id="resetDayBtnMobile" class="sm:hidden fixed bottom-5 right-5 z-20 flex items-center gap-1.5 px-4 py-3 rounded-full bg-lime-400 text-ink-950 text-sm font-bold shadow-lg">
     ↻ New day
@@ -298,7 +290,7 @@
     </div>
   </div>
   
-  <!-- Notification permission modal (custom, centered) -->
+  <!-- Notification permission modal -->
   <div id="notifPermissionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 notif-perm-modal">
     <div class="modal-content bg-paper-50 dark:bg-ink-950 rounded-2xl p-5">
       <div class="flex items-start gap-3">
@@ -315,7 +307,7 @@
     </div>
   </div>
 
-  <!-- Generic confirm modal (centered, animated) -->
+  <!-- Generic confirm modal -->
   <div id="confirmModal" class="fixed inset-0 z-60 hidden items-center justify-center bg-black/50 confirm-modal">
     <div class="modal-wrap w-full max-w-md px-4">
       <div class="modal-card modal-content bg-paper-50 dark:bg-ink-950 rounded-2xl p-5">
@@ -337,51 +329,123 @@
 
 <script>
 /* ---------------------------------------------------------
-   DATA MODEL
+   DATA MODEL & CONFIGURATION
 --------------------------------------------------------- */
-const STORAGE_KEY = 'english-study-log-v1';
+const STORAGE_KEY = 'english-study-log-v2';
 const UNITS_PER_BOOK = 30;
 
-const MODULES = [
-  { id:'reading', icon:'📖', name:'Reading', accent:'#5B8DEF', target:13, targetLabel:'13 tasks',
+const MODULE_CONFIG = {
+  reading: {
+    id: 'reading', icon: '📖', name: 'Reading', accent: '#5B8DEF',
+    parts: [
+      { id: 'part1', name: 'Part 1', label: 'Part 1 (Passage 1)', maxScore: 13, targetLabel: '13 questions' },
+      { id: 'part2', name: 'Part 2', label: 'Part 2 (Passage 2)', maxScore: 13, targetLabel: '13 questions' },
+      { id: 'part3', name: 'Part 3', label: 'Part 3 (Passage 3)', maxScore: 14, targetLabel: '14 questions' },
+      { id: 'full',  name: 'Full Test', label: 'Full Reading Test', maxScore: 40, targetLabel: '40 total questions' },
+    ],
     links:[
-      {label:'KeyProvider IELTS — Reading 2', url:'https://keyproviderielts.com/en/exams/category/reading-2', fill:{section:'Part 1', passages:10, score:10}},
+      {label:'KeyProvider IELTS — Reading 2', url:'https://keyproviderielts.com/en/exams/category/reading-2'},
       {label:'IELTS Online Tests', url:'https://www.ieltsonlinetests.com/reading-tests'}
-    ]},
-  { id:'writing', icon:'✍️', name:'Writing', accent:'#B98CE8', target:1, targetLabel:'1 task',
+    ]
+  },
+  writing: {
+    id: 'writing', icon: '✍️', name: 'Writing', accent: '#B98CE8',
+    parts: [
+      { id: 'task1', name: 'Task 1', label: 'Task 1 (Report / Letter)', targetWords: 150, targetLabel: '150 words' },
+      { id: 'task2', name: 'Task 2', label: 'Task 2 (Essay)', targetWords: 250, targetLabel: '250 words' },
+    ],
     links:[
-      {label:'KeyProvider IELTS — Writing 3', url:'https://keyproviderielts.com/en/exams/category/writing-3', fill:{task:'Task 1', wordCount:150, completed:true}},
+      {label:'KeyProvider IELTS — Writing 3', url:'https://keyproviderielts.com/en/exams/category/writing-3'},
       {label:'Write & Improve', url:'https://writeandimprove.com/'}
-    ]},
-  { id:'listening', icon:'🎧', name:'Listening', accent:'#43C6AC', target:1, targetLabel:'1 part / full test',
+    ]
+  },
+  listening: {
+    id: 'listening', icon: '🎧', name: 'Listening', accent: '#43C6AC',
+    parts: [
+      { id: 'part1', name: 'Part 1', label: 'Part 1 (Social Conversation)', maxScore: 10, targetLabel: '10 questions' },
+      { id: 'part2', name: 'Part 2', label: 'Part 2 (Monologue)', maxScore: 10, targetLabel: '10 questions' },
+      { id: 'part3', name: 'Part 3', label: 'Part 3 (Academic Discussion)', maxScore: 10, targetLabel: '10 questions' },
+      { id: 'part4', name: 'Part 4', label: 'Part 4 (Academic Lecture)', maxScore: 10, targetLabel: '10 questions' },
+      { id: 'full',  name: 'Full Test', label: 'Full Listening Test', maxScore: 40, targetLabel: '40 total questions' },
+    ],
     links:[
-      {label:'KeyProvider IELTS — Listening 1', url:'https://keyproviderielts.com/en/exams/category/listening-1', fill:{section:'Part 1', score:10}},
+      {label:'KeyProvider IELTS — Listening 1', url:'https://keyproviderielts.com/en/exams/category/listening-1'},
       {label:'CrackIELTS', url:'https://crackielts.com/'}
-    ]},
-  { id:'speaking', icon:'🎙️', name:'Speaking', accent:'#FF9F5A', target:15, targetLabel:'15 questions',
+    ]
+  },
+  speaking: {
+    id: 'speaking', icon: '🎙️', name: 'Speaking', accent: '#FF9F5A',
+    parts: [
+      { id: 'part1', name: 'Part 1', label: 'Part 1 (Intro & Questions)', targetQuestions: 5, targetLabel: '5 questions' },
+      { id: 'part2', name: 'Part 2', label: 'Part 2 (Cue Card Speech)', targetQuestions: 1, targetLabel: '1 topic speech' },
+      { id: 'part3', name: 'Part 3', label: 'Part 3 (Deep Discussion)', targetQuestions: 5, targetLabel: '5 questions' },
+    ],
     links:[
-      {label:'KeyProvider IELTS — Speaking 4', url:'https://keyproviderielts.com/en/exams/category/speaking-4', fill:{questions:10, topic:'Speaking practice'}},
+      {label:'KeyProvider IELTS — Speaking 4', url:'https://keyproviderielts.com/en/exams/category/speaking-4'},
       {label:'YouTube — Speaking Mock', url:'https://www.youtube.com/results?search_query=IELTS+Speaking+Mock+Test'}
-    ]},
-  { id:'bbcted', icon:'🌐', name:'BBC & TED', accent:'#4ECDC4', target:6, targetLabel:'3 BBC + 3 TED',
+    ]
+  },
+  bbcted: {
+    id: 'bbcted', icon: '🌐', name: 'BBC & TED', accent: '#4ECDC4',
+    parts: [
+      { id: 'bbc', name: 'BBC Articles', label: 'BBC Learning English', targetCount: 3, targetLabel: '3 articles/podcasts' },
+      { id: 'ted', name: 'TED Talks', label: 'TED Talks Video', targetCount: 3, targetLabel: '3 videos' },
+    ],
     links:[
       {label:'BBC Learning English', url:'https://www.bbc.co.uk/learningenglish'},
       {label:'TED Talks', url:'https://www.ted.com'}
-    ]},
-];
+    ]
+  }
+};
 
 function todayISO(){
   const d = new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-function blankDay(){
+function blankPartState(){
   return {
-    reading: { passages:0, score:'', section:'Part 1' },
-    writing: { task:'Task 1', wordCount:'', completed:false },
-    listening: { section:'Part 1', completed:false, score:'' },
-    speaking: { questions:0, topic:'' },
-    bbcted: { bbc:0, ted:0 },
+    reading: {
+      activePart: 'part1',
+      parts: {
+        part1: { passages: 0, score: '', completed: false },
+        part2: { passages: 0, score: '', completed: false },
+        part3: { passages: 0, score: '', completed: false },
+        full:  { passages: 0, score: '', completed: false },
+      }
+    },
+    writing: {
+      activePart: 'task1',
+      parts: {
+        task1: { wordCount: '', completed: false },
+        task2: { wordCount: '', completed: false },
+      }
+    },
+    listening: {
+      activePart: 'part1',
+      parts: {
+        part1: { score: '', completed: false },
+        part2: { score: '', completed: false },
+        part3: { score: '', completed: false },
+        part4: { score: '', completed: false },
+        full:  { score: '', completed: false },
+      }
+    },
+    speaking: {
+      activePart: 'part1',
+      parts: {
+        part1: { questions: 0, topic: '', completed: false },
+        part2: { questions: 0, topic: '', completed: false },
+        part3: { questions: 0, topic: '', completed: false },
+      }
+    },
+    bbcted: {
+      activePart: 'bbc',
+      parts: {
+        bbc: { count: 0, completed: false },
+        ted: { count: 0, completed: false },
+      }
+    }
   };
 }
 
@@ -405,8 +469,8 @@ function defaultState(){
     streak: 0,
     bestStreak: 0,
     lastCompletedDate: null,
-    history: [], // [{date, pct, met}]
-    today: blankDay(),
+    history: [],
+    today: blankPartState(),
     vocab: {
       book1: { current:1, completed:0 },
       book2: { current:1, completed:0 },
@@ -418,33 +482,62 @@ function defaultState(){
   };
 }
 
-function mergeListeningPlan(savedPlan){
-  const defPlan = defaultListeningPlan();
-  if(!savedPlan || !Array.isArray(savedPlan.weeks)) return defPlan;
-  return {
-    weeks: defPlan.weeks.map((defaultWeek, index) => {
-      const savedWeek = savedPlan.weeks[index] || {};
-      return {
-        day: savedWeek.day || defaultWeek.day,
-        task: savedWeek.task || defaultWeek.task,
-        score: savedWeek.score || '',
-        done: typeof savedWeek.done === 'boolean' ? savedWeek.done : false,
-      };
-    })
-  };
-}
-
 function load(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('english-study-log-v1');
     if(!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    // merge in case of missing fields from older versions
     const def = defaultState();
+    
+    // Check if parsed data needs migration from v1 format
+    const today = blankPartState();
+    if(parsed.today) {
+      if(parsed.today.reading && parsed.today.reading.parts) {
+        Object.assign(today, parsed.today);
+      } else {
+        // Migrate old v1 format to per-part format
+        const rSec = (parsed.today.reading && parsed.today.reading.section === 'Part 2') ? 'part2' :
+                     (parsed.today.reading && parsed.today.reading.section === 'Part 3') ? 'part3' :
+                     (parsed.today.reading && parsed.today.reading.section === 'Full reading') ? 'full' : 'part1';
+        today.reading.activePart = rSec;
+        today.reading.parts[rSec] = {
+          passages: parsed.today.reading?.passages || 0,
+          score: parsed.today.reading?.score || '',
+          completed: (Number(parsed.today.reading?.passages)||0) > 0
+        };
+
+        const wTask = (parsed.today.writing && parsed.today.writing.task === 'Task 2') ? 'task2' : 'task1';
+        today.writing.activePart = wTask;
+        today.writing.parts[wTask] = {
+          wordCount: parsed.today.writing?.wordCount || '',
+          completed: !!parsed.today.writing?.completed
+        };
+
+        const lSec = (parsed.today.listening && parsed.today.listening.section === 'Part 2') ? 'part2' :
+                     (parsed.today.listening && parsed.today.listening.section === 'Part 3') ? 'part3' :
+                     (parsed.today.listening && parsed.today.listening.section === 'Part 4') ? 'part4' :
+                     (parsed.today.listening && parsed.today.listening.section === 'Full test') ? 'full' : 'part1';
+        today.listening.activePart = lSec;
+        today.listening.parts[lSec] = {
+          score: parsed.today.listening?.score || '',
+          completed: !!parsed.today.listening?.completed
+        };
+
+        today.speaking.parts.part1 = {
+          questions: parsed.today.speaking?.questions || 0,
+          topic: parsed.today.speaking?.topic || '',
+          completed: (parsed.today.speaking?.questions || 0) >= 5
+        };
+
+        today.bbcted.parts.bbc = { count: parsed.today.bbcted?.bbc || 0, completed: (parsed.today.bbcted?.bbc||0)>=3 };
+        today.bbcted.parts.ted = { count: parsed.today.bbcted?.ted || 0, completed: (parsed.today.bbcted?.ted||0)>=3 };
+      }
+    }
+
     return Object.assign(def, parsed, {
-      today: Object.assign(blankDay(), parsed.today || {}),
+      today: today,
       vocab: Object.assign(def.vocab, parsed.vocab || {}),
-      listeningPlan: mergeListeningPlan(parsed.listeningPlan),
+      listeningPlan: parsed.listeningPlan || defaultListeningPlan(),
     });
   }catch(e){
     console.error('Could not read saved data, starting fresh.', e);
@@ -459,7 +552,7 @@ function save(){
 let state = load();
 
 /* ---------------------------------------------------------
-   DAY ROLLOVER — auto-close a finished day when the date changes
+   DAY ROLLOVER
 --------------------------------------------------------- */
 function finalizeDay(silent){
   const pct = computeOverallPct();
@@ -475,12 +568,10 @@ function finalizeDay(silent){
   }
   state.bestStreak = Math.max(state.bestStreak, state.streak);
 
-  // store full snapshot of the day's details so we can compute recent-period summaries
   state.history.unshift({ date: dateBeingClosed, pct, met, details: JSON.parse(JSON.stringify(state.today)) });
-  // keep up to one year of history for flexible summaries
   state.history = state.history.slice(0, 365);
 
-  state.today = blankDay();
+  state.today = blankPartState();
   state.activeDate = todayISO();
   save();
   if(!silent) renderAll();
@@ -489,108 +580,473 @@ function finalizeDay(silent){
 function isConsecutive(prevISO, curISO){
   const prev = new Date(prevISO+'T00:00:00');
   const cur = new Date(curISO+'T00:00:00');
-  const diffDays = Math.round((cur - prev) / 86400000);
-  return diffDays === 1;
+  return Math.round((cur - prev) / 86400000) === 1;
 }
 
-// auto-rollover on load if the calendar date has moved on
 if (state.activeDate !== todayISO()) {
   finalizeDay(true);
 }
 
 /* ---------------------------------------------------------
-   PROGRESS CALCULATION
+   ISOLATED PART PROGRESS CALCULATIONS
 --------------------------------------------------------- */
-function writingProgress(task, wordCount){
-  const words = Number(wordCount) || 0;
-  if (task === 'Task 2') {
-    if (words >= 250) return 0.6;
-    if (words >= 200) return 0.5;
-    if (words >= 180) return 0.4;
-    if (words >= 150) return 0.35;
-    if (words >= 100) return 0.25;
-    if (words >= 50) return 0.15;
-    return 0;
-  }
+function partProgress(moduleId, partId){
+  const todayModule = state.today[moduleId];
+  if(!todayModule || !todayModule.parts[partId]) return 0;
+  const partData = todayModule.parts[partId];
 
-  if (words >= 150) return 0.4;
-  if (words >= 130) return 0.35;
-  if (words >= 100) return 0.25;
-  if (words >= 80) return 0.2;
-  if (words >= 50) return 0.15;
-  if (words >= 20) return 0.1;
-  return 0;
-}
-
-function moduleProgress(id){
-  const t = state.today;
-  switch(id){
+  switch(moduleId){
     case 'reading': {
-      const selectedValue = Number(t.reading.passages) || 0;
-      return Math.min(1, selectedValue / 40);
+      const cfg = MODULE_CONFIG.reading.parts.find(p=>p.id===partId);
+      const score = Number(partData.score);
+      if(!isNaN(score) && partData.score !== '') return Math.min(1, score / (cfg ? cfg.maxScore : 13));
+      const passages = Number(partData.passages) || 0;
+      return Math.min(1, passages / (cfg ? cfg.maxScore : 13));
     }
     case 'writing': {
-      const task = t.writing.task || 'Task 1';
-      const taskProgress = writingProgress(task, t.writing.wordCount);
-      const checkboxProgress = t.writing.completed ? 1 : 0;
-      return Math.max(taskProgress, checkboxProgress);
+      const cfg = MODULE_CONFIG.writing.parts.find(p=>p.id===partId);
+      const targetWords = cfg ? cfg.targetWords : 150;
+      const words = Number(partData.wordCount) || 0;
+      const wordProgress = Math.min(1, words / targetWords);
+      return partData.completed ? 1 : wordProgress;
     }
     case 'listening': {
-      const score = Number(t.listening.score) || 0;
-      const scoreProgress = Math.min(1, score / 40);
-      const weeklyProgress = state.listeningPlan
-        ? state.listeningPlan.weeks.filter(w => w.done).length / state.listeningPlan.weeks.length
-        : 0;
-      const completedProgress = t.listening.completed ? 1 : 0;
-      return Math.max(scoreProgress, weeklyProgress, completedProgress);
+      const cfg = MODULE_CONFIG.listening.parts.find(p=>p.id===partId);
+      const score = Number(partData.score);
+      const scoreProgress = (!isNaN(score) && partData.score !== '') ? Math.min(1, score / (cfg ? cfg.maxScore : 10)) : 0;
+      return partData.completed ? 1 : scoreProgress;
     }
-    case 'speaking': return Math.min(1, (t.speaking.questions||0) / 15);
-    case 'bbcted': return Math.min(1, ((t.bbcted.bbc||0) + (t.bbcted.ted||0)) / 6);
+    case 'speaking': {
+      const cfg = MODULE_CONFIG.speaking.parts.find(p=>p.id===partId);
+      const q = Number(partData.questions) || 0;
+      const target = cfg ? cfg.targetQuestions : 5;
+      return partData.completed ? 1 : Math.min(1, q / target);
+    }
+    case 'bbcted': {
+      const cfg = MODULE_CONFIG.bbcted.parts.find(p=>p.id===partId);
+      const cnt = Number(partData.count) || 0;
+      const target = cfg ? cfg.targetCount : 3;
+      return partData.completed ? 1 : Math.min(1, cnt / target);
+    }
     default: return 0;
   }
 }
 
+function moduleProgress(moduleId){
+  const cfg = MODULE_CONFIG[moduleId];
+  if(!cfg) return 0;
+  const parts = cfg.parts;
+  const sum = parts.reduce((acc, p) => acc + partProgress(moduleId, p.id), 0);
+  return Math.min(1, sum / parts.length);
+}
+
 function computeOverallPct(){
-  const sum = MODULES.reduce((acc,m) => acc + moduleProgress(m.id), 0);
-  return Math.round((sum / MODULES.length) * 100);
-}
-
-function readingTaskMax(section){
-  const limits = {
-    'Part 1': 13,
-    'Part 2': 13,
-    'Part 3': 14,
-    'Full reading': 40,
-  };
-  return limits[section] || 13;
-}
-
-function readingMaxScore(section){
-  return 40;
-}
-
-function readingTargetLabel(section){
-  const labels = {
-    'Part 1': '40 total',
-    'Part 2': '40 total',
-    'Part 3': '40 total',
-    'Full reading': '40 total',
-  };
-  return labels[section] || '40 total';
-}
-
-function readingTasksLabel(section){
-  const labels = {
-    'Part 1': 'Part 1 tasks completed',
-    'Part 2': 'Part 2 tasks completed',
-    'Part 3': 'Part 3 tasks completed',
-    'Full reading': 'Full reading passages completed',
-  };
-  return labels[section] || 'Passages completed';
+  const moduleIds = Object.keys(MODULE_CONFIG);
+  const sum = moduleIds.reduce((acc, id) => acc + moduleProgress(id), 0);
+  return Math.round((sum / moduleIds.length) * 100);
 }
 
 /* ---------------------------------------------------------
-   RENDER: HEADER / HERO
+   NESTED HASH ROUTER & BREADCRUMB MANAGEMENT
+--------------------------------------------------------- */
+function parseHashRoute(){
+  const hash = window.location.hash.replace('#', '') || 'home';
+  const parts = hash.split('/');
+  return {
+    module: parts[0] || 'home',
+    part: parts[1] || null
+  };
+}
+
+function navigateTo(module, part){
+  const hash = part ? `#${module}/${part}` : `#${module}`;
+  window.location.hash = hash;
+}
+
+function renderBreadcrumbAndNav(){
+  const route = parseHashRoute();
+  const trail = document.getElementById('breadcrumbTrail');
+  const tabs = document.getElementById('routeNavTabs');
+
+  // Render Breadcrumb Trail
+  let items = [
+    `<li class="inline-flex items-center">
+      <a href="#home" class="hover:text-lime-400 flex items-center gap-1 font-semibold ${route.module==='home'?'text-lime-400':'text-ink-900/60 dark:text-paper-100/60'}">
+        🏠 Home
+      </a>
+    </li>`
+  ];
+
+  if(route.module !== 'home' && MODULE_CONFIG[route.module]){
+    const mCfg = MODULE_CONFIG[route.module];
+    items.push(`
+      <li class="inline-flex items-center text-ink-900/40 dark:text-paper-100/40">/</li>
+      <li class="inline-flex items-center">
+        <a href="#${mCfg.id}" class="hover:text-lime-400 font-semibold ${!route.part?'text-lime-400':'text-ink-900/60 dark:text-paper-100/60'}">
+          ${mCfg.icon} ${mCfg.name}
+        </a>
+      </li>
+    `);
+
+    if(route.part){
+      const pCfg = mCfg.parts.find(p=>p.id===route.part);
+      const pName = pCfg ? pCfg.name : route.part;
+      items.push(`
+        <li class="inline-flex items-center text-ink-900/40 dark:text-paper-100/40">/</li>
+        <li class="inline-flex items-center font-bold text-lime-400">
+          📍 ${pName}
+        </li>
+      `);
+    }
+  } else if(route.module === 'vocab'){
+    items.push(`
+      <li class="inline-flex items-center text-ink-900/40 dark:text-paper-100/40">/</li>
+      <li class="inline-flex items-center font-bold text-lime-400">📚 Vocabulary</li>
+    `);
+  } else if(route.module === 'history'){
+    items.push(`
+      <li class="inline-flex items-center text-ink-900/40 dark:text-paper-100/40">/</li>
+      <li class="inline-flex items-center font-bold text-lime-400">📅 History</li>
+    `);
+  }
+
+  trail.innerHTML = items.join('');
+
+  // Quick Navigation Tabs
+  const navModules = [
+    { id:'home', label:'Home', icon:'🏠' },
+    ...Object.values(MODULE_CONFIG),
+    { id:'vocab', label:'Vocab', icon:'📚' },
+    { id:'history', label:'History', icon:'📅' }
+  ];
+
+  tabs.innerHTML = navModules.map(m => {
+    const isActive = route.module === m.id;
+    return `
+      <a href="#${m.id}" class="px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${isActive ? 'nav-pill-active' : 'border-transparent text-ink-900/60 dark:text-paper-100/60 hover:bg-black/5 dark:hover:bg-white/5'}">
+        ${m.icon} ${m.name || m.label}
+      </a>
+    `;
+  }).join('');
+}
+
+/* ---------------------------------------------------------
+   DYNAMIC ROUTE DISPLAY CONTROLLER
+--------------------------------------------------------- */
+function handleRouteUpdate(){
+  renderBreadcrumbAndNav();
+  const route = parseHashRoute();
+  
+  const heroSec = document.getElementById('heroSection');
+  const modulesGrid = document.getElementById('modulesGrid');
+  const focusedSec = document.getElementById('focusedRouteSection');
+  const vocabSec = document.getElementById('vocabSection');
+  const historySec = document.getElementById('historySection');
+  const summarySec = document.getElementById('summarySection');
+
+  if(route.module === 'home'){
+    heroSec.classList.remove('hidden');
+    modulesGrid.classList.remove('hidden');
+    focusedSec.classList.add('hidden');
+    vocabSec.classList.remove('hidden');
+    historySec.classList.remove('hidden');
+    summarySec.classList.remove('hidden');
+  } else if(MODULE_CONFIG[route.module]){
+    heroSec.classList.add('hidden');
+    modulesGrid.classList.add('hidden');
+    focusedSec.classList.remove('hidden');
+    vocabSec.classList.add('hidden');
+    historySec.classList.add('hidden');
+    summarySec.classList.add('hidden');
+
+    renderFocusedRouteView(route.module, route.part);
+  } else if(route.module === 'vocab'){
+    heroSec.classList.add('hidden');
+    modulesGrid.classList.add('hidden');
+    focusedSec.classList.add('hidden');
+    vocabSec.classList.remove('hidden');
+    historySec.classList.add('hidden');
+    summarySec.classList.add('hidden');
+  } else if(route.module === 'history'){
+    heroSec.classList.add('hidden');
+    modulesGrid.classList.add('hidden');
+    focusedSec.classList.add('hidden');
+    vocabSec.classList.add('hidden');
+    historySec.classList.remove('hidden');
+    summarySec.classList.remove('hidden');
+  }
+}
+
+window.addEventListener('hashchange', handleRouteUpdate);
+
+/* ---------------------------------------------------------
+   RENDER: FOCUSED MODULE & PART VIEW
+--------------------------------------------------------- */
+function renderFocusedRouteView(moduleId, activePartId){
+  const mCfg = MODULE_CONFIG[moduleId];
+  if(!mCfg) return;
+
+  // Set active part in state if provided
+  if(activePartId && mCfg.parts.some(p=>p.id===activePartId)){
+    state.today[moduleId].activePart = activePartId;
+  } else {
+    activePartId = state.today[moduleId].activePart || mCfg.parts[0].id;
+  }
+
+  const partCfg = mCfg.parts.find(p=>p.id===activePartId) || mCfg.parts[0];
+  const pProg = partProgress(moduleId, partCfg.id);
+  const pPct = Math.round(pProg * 100);
+  const mProg = moduleProgress(moduleId);
+  const mPct = Math.round(mProg * 100);
+
+  const container = document.getElementById('focusedRouteSection');
+
+  container.innerHTML = `
+    <div class="glass rounded-3xl shadow-glass p-5 sm:p-7 module-card mb-6" style="--accent:${mCfg.accent}">
+      
+      <!-- Module Title & Overall Module Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-black/10 dark:border-white/10">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-2xl">${mCfg.icon}</span>
+            <h2 class="font-display font-700 text-2xl">${mCfg.name} Module</h2>
+          </div>
+          <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Module Overall Progress: <strong style="color:${mCfg.accent}">${mPct}%</strong> across all parts.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="#home" class="px-3 py-1.5 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
+            ← Back to Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- NESTED PART ROUTE TABS / PILLS -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 border-b border-black/5 dark:border-white/5">
+        <span class="text-xs font-semibold text-ink-900/50 dark:text-paper-100/50 mr-1">Select Part:</span>
+        ${mCfg.parts.map(p => {
+          const isSelected = p.id === activePartId;
+          const currProg = Math.round(partProgress(moduleId, p.id) * 100);
+          return `
+            <a href="#${moduleId}/${p.id}"
+               class="flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition whitespace-nowrap border ${isSelected ? 'shadow-md' : 'bg-black/5 dark:bg-white/5 border-transparent text-ink-900/70 dark:text-paper-100/70 hover:brightness-110'}"
+               style="${isSelected ? `background:${mCfg.accent}; color:#0A0D1A; border-color:${mCfg.accent}` : ''}">
+              <span>${p.name}</span>
+              <span class="px-1.5 py-0.5 rounded-full text-[10px] ${isSelected ? 'bg-black/20 text-black' : 'bg-black/10 dark:bg-white/10'}">${currProg}%</span>
+            </a>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- ACTIVE PART CARD (ISOLATED PROGRESS & INPUTS) -->
+      <div class="grid sm:grid-cols-[1fr_240px] gap-6 items-start">
+        
+        <!-- Form Inputs for Active Part -->
+        <div class="bg-black/5 dark:bg-white/5 rounded-2xl p-5 border border-black/10 dark:border-white/10">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-700 text-lg flex items-center gap-2">
+              <span>📍 ${partCfg.label}</span>
+            </h3>
+            <span class="text-xs px-2.5 py-1 rounded-full font-mono bg-lime-400/10 border border-lime-400/30 text-lime-500 font-semibold">
+              Target: ${partCfg.targetLabel}
+            </span>
+          </div>
+
+          ${renderPartFormInputs(moduleId, partCfg)}
+
+          <!-- Quick Fill External Practice Links -->
+          <div class="mt-6 pt-4 border-t border-black/5 dark:border-white/5">
+            <div class="text-xs text-ink-900/50 dark:text-paper-100/50 mb-2">Practice resources for this module:</div>
+            <div class="flex flex-wrap gap-2">
+              ${mCfg.links.map(l => `
+                <a href="${l.url}" target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1.5 rounded-xl bg-black/10 dark:bg-white/10 hover:brightness-125 transition font-medium">
+                  ${l.label} ↗
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Ring & Progress for Active Part -->
+        <div class="glass rounded-2xl p-5 text-center flex flex-col items-center justify-center border border-black/10 dark:border-white/10">
+          <div class="text-xs font-semibold text-ink-900/50 dark:text-paper-100/50 uppercase tracking-wider mb-3">
+            ${partCfg.name} Progress
+          </div>
+
+          <div class="ring-wrap relative w-32 h-32 my-2" style="--ring-color:${mCfg.accent}; --pct:${pPct};">
+            <div class="ring-track w-full h-full rounded-full grid place-items-center">
+              <div class="w-[78%] h-[78%] rounded-full bg-paper-50 dark:bg-ink-950 grid place-items-center">
+                <div>
+                  <div class="font-mono font-700 text-2xl" style="color:${mCfg.accent}">${pPct}%</div>
+                  <div class="text-[9px] uppercase tracking-wider text-ink-900/50 dark:text-paper-100/50">Part score</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full mt-3">
+            <div class="text-xs font-semibold mb-1 flex justify-between">
+              <span>Part Completion</span>
+              <span>${pPct}%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+              <div class="bar-fill h-full rounded-full" style="width:${pPct}%; background:${mCfg.accent}"></div>
+            </div>
+          </div>
+
+          ${pPct >= 100 ? `
+            <div class="mt-4 px-3 py-1 rounded-full bg-lime-400/20 text-lime-500 font-bold text-xs flex items-center gap-1">
+              <span>🎉 Part Complete!</span>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+      <!-- ALL PARTS SUMMARY TABLE -->
+      <div class="mt-8">
+        <h4 class="font-display font-700 text-sm mb-3">Summary of All ${mCfg.name} Parts</h4>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          ${mCfg.parts.map(p => {
+            const prog = partProgress(moduleId, p.id);
+            const pct = Math.round(prog * 100);
+            const isAct = p.id === activePartId;
+            return `
+              <a href="#${moduleId}/${p.id}" class="rounded-xl p-3 border transition ${isAct ? 'border-lime-400/50 bg-lime-400/10' : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10'}">
+                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                  <span>${p.name}</span>
+                  <span class="font-mono" style="color:${mCfg.accent}">${pct}%</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden mb-2">
+                  <div class="h-full rounded-full" style="width:${pct}%; background:${mCfg.accent}"></div>
+                </div>
+                <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">
+                  Target: ${p.targetLabel}
+                </div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  // Attach event listeners to input fields
+  container.querySelectorAll('[data-part-field]').forEach(input => {
+    const evt = (input.tagName === 'SELECT' || input.type === 'checkbox') ? 'change' : 'input';
+    input.addEventListener(evt, (e) => {
+      const field = e.target.dataset.partField;
+      let val = e.target.type === 'checkbox' ? e.target.checked : (e.target.type === 'number' ? (e.target.value === '' ? '' : Number(e.target.value)) : e.target.value);
+      
+      if(!state.today[moduleId].parts[activePartId]) {
+        state.today[moduleId].parts[activePartId] = {};
+      }
+      state.today[moduleId].parts[activePartId][field] = val;
+      save();
+      renderHero();
+      renderFocusedRouteView(moduleId, activePartId);
+    });
+  });
+}
+
+/* Form renderer per module/part */
+function renderPartFormInputs(moduleId, partCfg){
+  const pData = state.today[moduleId].parts[partCfg.id] || {};
+  
+  if(moduleId === 'reading'){
+    return `
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Passages / Tasks Completed</span>
+          <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="passages" value="${pData.passages ?? ''}" placeholder="0"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Score (out of ${partCfg.maxScore})</span>
+          <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="score" value="${pData.score ?? ''}" placeholder="Score"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+      </div>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Enter the number of correct answers or completed tasks for ${partCfg.name}.</p>
+    `;
+  }
+  
+  if(moduleId === 'writing'){
+    return `
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Word Count Written</span>
+          <input type="number" min="0" data-part-field="wordCount" value="${pData.wordCount ?? ''}" placeholder="e.g. 170"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <div class="flex items-center pt-5">
+          <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+            <input type="checkbox" class="chk" style="--chk-color:#B98CE8" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
+            <span>Mark ${partCfg.name} as Completed</span>
+          </label>
+        </div>
+      </div>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Target is ${partCfg.targetWords} words for ${partCfg.name}.</p>
+    `;
+  }
+
+  if(moduleId === 'listening'){
+    return `
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Score (out of ${partCfg.maxScore})</span>
+          <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="score" value="${pData.score ?? ''}" placeholder="Score"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <div class="flex items-center pt-5">
+          <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+            <input type="checkbox" class="chk" style="--chk-color:#43C6AC" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
+            <span>Mark ${partCfg.name} as Finished</span>
+          </label>
+        </div>
+      </div>
+    `;
+  }
+
+  if(moduleId === 'speaking'){
+    return `
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Questions Answered</span>
+          <input type="number" min="0" data-part-field="questions" value="${pData.questions ?? ''}" placeholder="0"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Topic / Speech Note</span>
+          <input type="text" data-part-field="topic" value="${pData.topic ?? ''}" placeholder="e.g. Favorite Hobby"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm">
+        </label>
+      </div>
+    `;
+  }
+
+  if(moduleId === 'bbcted'){
+    return `
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Count Completed</span>
+          <input type="number" min="0" data-part-field="count" value="${pData.count ?? ''}" placeholder="0"
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <div class="flex items-center pt-5">
+          <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+            <input type="checkbox" class="chk" style="--chk-color:#4ECDC4" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
+            <span>Completed</span>
+          </label>
+        </div>
+      </div>
+    `;
+  }
+
+  return '';
+}
+
+/* ---------------------------------------------------------
+   RENDER: HERO / DASHBOARD
 --------------------------------------------------------- */
 function renderHero(){
   document.getElementById('todayDateLabel').textContent = new Date(state.activeDate+'T00:00:00').toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'});
@@ -602,330 +1058,72 @@ function renderHero(){
   document.getElementById('bestStreak').textContent = state.bestStreak;
 
   const mini = document.getElementById('miniTargets');
-  mini.innerHTML = MODULES.map(m => {
+  mini.innerHTML = Object.values(MODULE_CONFIG).map(m => {
     const p = moduleProgress(m.id);
     const done = p >= 1;
-    return `<div class="rounded-xl px-2 py-2 text-center border ${done ? 'border-lime-400/50 bg-lime-400/10' : 'border-white/10 dark:border-white/5 bg-black/5 dark:bg-white/5'}">
+    return `<a href="#${m.id}" class="rounded-xl px-2 py-2 text-center border transition ${done ? 'border-lime-400/50 bg-lime-400/10' : 'border-white/10 dark:border-white/5 bg-black/5 dark:bg-white/5 hover:bg-black/10'}">
       <div class="text-base">${done ? '✅' : m.icon}</div>
       <div class="text-[10px] font-semibold mt-0.5 truncate">${m.name}</div>
-    </div>`;
-  }).join('');
-}
-
-/* ---------------------------------------------------------
-   RENDER: MODULE CARDS
---------------------------------------------------------- */
-function linkButtons(links){
-  return links.map(l => {
-    const fill = l.fill ? ` data-fill='${JSON.stringify(l.fill).replace(/'/g, '&apos;')}'` : '';
-    return `<a href="${l.url}" target="_blank" rel="noopener noreferrer"${fill}
-      class="text-[11px] px-2.5 py-1.5 rounded-lg bg-black/5 dark:bg-white/8 hover:bg-black/10 dark:hover:bg-white/15 transition font-medium whitespace-nowrap">
-      ${l.label} ↗
     </a>`;
   }).join('');
 }
 
-function applyLinkFill(moduleId, fill){
-  if (!fill || Object.keys(fill).length === 0) return;
-  if (moduleId === 'reading') {
-    state.today.reading.section = fill.section || state.today.reading.section || 'Part 1';
-    state.today.reading.passages = Number(fill.passages) || Number(state.today.reading.passages) || 0;
-    state.today.reading.score = Number(fill.score) || Number(state.today.reading.score) || 0;
-  }
-  if (moduleId === 'writing') {
-    state.today.writing.task = fill.task || state.today.writing.task || 'Task 1';
-    state.today.writing.wordCount = Number(fill.wordCount) || Number(state.today.writing.wordCount) || 0;
-    state.today.writing.completed = !!fill.completed || !!state.today.writing.completed;
-  }
-  if (moduleId === 'listening') {
-    state.today.listening.section = fill.section || state.today.listening.section || 'Part 1';
-    state.today.listening.score = Number(fill.score) || Number(state.today.listening.score) || 0;
-    state.today.listening.completed = !!fill.completed || !!state.today.listening.completed;
-  }
-  if (moduleId === 'speaking') {
-    state.today.speaking.questions = Number(fill.questions) || Number(state.today.speaking.questions) || 0;
-    state.today.speaking.topic = fill.topic || state.today.speaking.topic || '';
-  }
-  save();
-  renderAll();
-}
-
-function moduleBody(m){
-  const t = state.today;
-  if (m.id === 'reading') {
-    const section = t.reading.section || 'Part 1';
-    const maxTasks = readingTaskMax(section);
-    const maxScore = readingMaxScore(section);
-    const taskLabel = readingTasksLabel(section);
-    return `
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Reading section</span>
-          <select data-field="reading.section" class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
-            <option ${section==='Part 1'?'selected':''}>Part 1</option>
-            <option ${section==='Part 2'?'selected':''}>Part 2</option>
-            <option ${section==='Part 3'?'selected':''}>Part 3</option>
-            <option ${section==='Full reading'?'selected':''}>Full reading</option>
-          </select>
-          <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50 mt-2">Part 1 = 13 questions, Part 2 = 13 questions, Part 3 = 14 questions, Full reading = 40 total.</div>
-        </label>
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">${taskLabel}</span>
-          <input type="number" min="0" max="${maxTasks}" data-field="reading.passages" value="${t.reading.passages}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-      </div>
-      <div class="flex items-center gap-3 mb-3">
-        <label class="text-xs flex-1">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Score / ${maxScore}</span>
-          <input type="number" min="0" max="${maxScore}" data-field="reading.score" value="${t.reading.score}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-        <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 leading-5">
-          Use the correct section score. Full reading is out of 40.
-        </div>
-      </div>`;
-  }
-  
-
-  if (m.id === 'writing') {
-    return `
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Task</span>
-          <select data-field="writing.task" class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
-            <option ${t.writing.task==='Task 1'?'selected':''}>Task 1</option>
-            <option ${t.writing.task==='Task 2'?'selected':''}>Task 2</option>
-          </select>
-        </label>
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Word count</span>
-          <input type="number" min="0" data-field="writing.wordCount" value="${t.writing.wordCount}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-      </div>
-      <label class="flex items-center gap-2 text-xs mb-3 cursor-pointer">
-        <input type="checkbox" class="chk" style="--chk-color:${m.accent}" data-field="writing.completed" ${t.writing.completed?'checked':''}>
-        <span>Task completed</span>
-      </label>`;
-  }
-  if (m.id === 'listening') {
-    const plan = state.listeningPlan;
-    const section = t.listening.section || 'Part 1';
-    return `
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Listening section</span>
-          <select data-field="listening.section" class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
-            <option ${section==='Part 1'?'selected':''}>Part 1</option>
-            <option ${section==='Part 2'?'selected':''}>Part 2</option>
-            <option ${section==='Part 3'?'selected':''}>Part 3</option>
-            <option ${section==='Part 4'?'selected':''}>Part 4</option>
-            <option ${section==='Full test'?'selected':''}>Full test</option>
-          </select>
-        </label>
-        <label class="flex items-center gap-2 text-xs cursor-pointer mt-6">
-          <input type="checkbox" class="chk" style="--chk-color:${m.accent}" data-field="listening.completed" ${t.listening.completed?'checked':''}>
-          <span>Completed</span>
-        </label>
-      </div>
-      <div class="mb-3">
-        <label class="text-xs block">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Score / 40</span>
-          <input type="number" min="0" max="40" data-field="listening.score" value="${t.listening.score}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-      </div>
-      <div class="mb-3 text-[11px] text-ink-900/50 dark:text-paper-100/50">
-        ${section} • Part 1 • Part 2 • Part 3 • Part 4 • Full test
-      </div>
-      <button type="button" data-open-weekly-plan class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-black/10 dark:bg-white/15 text-ink-900 dark:text-paper-100 mb-4">
-        1 haftalik zadaniya
-      </button>
-      <div class="space-y-3 hidden" data-weekly-plan-panel>
-        ${plan.weeks.map((week,i) => `
-          <div class="grid gap-3 sm:grid-cols-[1fr_auto] items-center rounded-2xl border border-black/10 dark:border-white/10 bg-white/5 dark:bg-white/10 p-3">
-            <div>
-              <div class="text-[11px] uppercase tracking-[0.24em] text-ink-900/40 dark:text-paper-100/40 mb-1">${week.day || 'Day'}</div>
-              <div class="font-medium text-sm">${week.task}</div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">+ Full test score</div>
-              <input type="text" data-plan-index="${i}" data-plan-field="score" value="${week.score}"
-                class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-2 text-sm font-mono">
-              <button type="button" data-plan-index="${i}" class="rounded-full px-4 py-2 font-semibold text-sm ${week.done ? 'bg-lime-500 text-ink-950' : 'bg-black/10 dark:bg-white/15 text-ink-900 dark:text-paper-100'}">
-                ${week.done ? 'Bajardi ✓' : 'Bajardim'}
-              </button>
-            </div>
-          </div>
-        `).join('')}
-      </div>`;
-  }
-  if (m.id === 'speaking') {
-    return `
-      <div class="flex items-center gap-3 mb-3">
-        <label class="text-xs flex-1">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Questions answered</span>
-          <input type="number" min="0" max="60" data-field="speaking.questions" value="${t.speaking.questions}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-      </div>
-      <label class="text-xs block mb-3">
-        <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">Topic note</span>
-        <input type="text" placeholder="e.g. Describe a memorable trip" data-field="speaking.topic" value="${t.speaking.topic}"
-          class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm">
-      </label>`;
-  }
-  if (m.id === 'bbcted') {
-    return `
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">BBC articles/podcasts</span>
-          <input type="number" min="0" max="10" data-field="bbcted.bbc" value="${t.bbcted.bbc}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-        <label class="text-xs">
-          <span class="block text-ink-900/50 dark:text-paper-100/50 mb-1">TED Talks watched</span>
-          <input type="number" min="0" max="10" data-field="bbcted.ted" value="${t.bbcted.ted}"
-            class="w-full bg-black/5 dark:bg-white/8 rounded-lg px-2.5 py-1.5 text-sm font-mono">
-        </label>
-      </div>`;
-  }
-  return '';
-}
-
+/* ---------------------------------------------------------
+   RENDER: MODULE CARDS ON DASHBOARD
+--------------------------------------------------------- */
 function renderModules(){
   const grid = document.getElementById('modulesGrid');
-  grid.innerHTML = MODULES.map(m => {
+  grid.innerHTML = Object.values(MODULE_CONFIG).map(m => {
     const p = moduleProgress(m.id);
-    const pct = Math.round(p*100);
+    const pct = Math.round(p * 100);
+    const activePartId = state.today[m.id]?.activePart || m.parts[0].id;
+    const activePart = m.parts.find(x=>x.id===activePartId) || m.parts[0];
+
     return `
     <div class="glass rounded-3xl shadow-glass p-5 module-card" style="--accent:${m.accent}">
       <div class="flex items-start justify-between mb-3">
         <div>
-          <h3 class="font-display font-700 text-base flex items-center gap-2">${m.icon} ${m.name}</h3>
-          <p class="text-[11px] text-ink-900/45 dark:text-paper-100/45">Target: ${m.id === 'reading' ? readingTargetLabel(state.today.reading.section || 'Part 1') : m.targetLabel}</p>
+          <a href="#${m.id}/${activePart.id}" class="font-display font-700 text-base flex items-center gap-2 hover:text-lime-400 transition">
+            ${m.icon} ${m.name} ↗
+          </a>
+          <p class="text-[11px] text-ink-900/45 dark:text-paper-100/45 mt-0.5">
+            Active Part: <strong>${activePart.name}</strong>
+          </p>
         </div>
         <div class="text-right">
           <div class="font-mono font-700 text-lg" style="color:${m.accent}">${pct}%</div>
           ${pct>=100 ? '<div class="text-[10px] text-lime-500 font-semibold">done ✓</div>' : ''}
         </div>
       </div>
+      
       <div class="w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden mb-4">
         <div class="bar-fill h-full rounded-full" style="width:${pct}%;background:${m.accent};"></div>
       </div>
-      <div data-module="${m.id}">${moduleBody(m)}</div>
-      <div class="flex flex-wrap gap-1.5 pt-1 border-t border-black/5 dark:border-white/5 mt-1">
-        ${linkButtons(m.links)}
+
+      <!-- Quick Sub-part pills -->
+      <div class="flex items-center gap-1.5 flex-wrap mb-4">
+        ${m.parts.map(pt => {
+          const ptProg = Math.round(partProgress(m.id, pt.id) * 100);
+          const isAct = pt.id === activePartId;
+          return `
+            <a href="#${m.id}/${pt.id}" class="px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition ${isAct ? 'bg-lime-400/20 border-lime-400/50 text-lime-400' : 'bg-black/5 dark:bg-white/5 border-transparent text-ink-900/60 dark:text-paper-100/60 hover:bg-black/10'}">
+              ${pt.name} (${ptProg}%)
+            </a>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="flex flex-wrap gap-1.5 pt-2 border-t border-black/5 dark:border-white/5">
+        <a href="#${m.id}/${activePart.id}" class="text-[11px] px-3 py-1.5 rounded-lg bg-lime-400/10 text-lime-500 font-bold hover:brightness-110 transition">
+          Open ${activePart.name} Details →
+        </a>
       </div>
     </div>`;
   }).join('');
-
-  // wire inputs
-  grid.querySelectorAll('[data-field]').forEach(el => {
-    const evt = (el.tagName === 'SELECT' || el.type === 'checkbox') ? 'change' : 'input';
-    el.addEventListener(evt, onFieldChange);
-  });
-
-  grid.querySelectorAll('a[data-fill]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const fill = link.dataset.fill ? JSON.parse(link.dataset.fill.replace(/&apos;/g, "'")) : {};
-      if (!fill || Object.keys(fill).length === 0) return;
-
-      const targetModule = link.closest('[data-module]')?.dataset.module;
-      if (targetModule === 'reading') {
-        state.today.reading.section = fill.section || state.today.reading.section || 'Part 1';
-        state.today.reading.passages = Number(fill.passages) || Number(state.today.reading.passages) || 0;
-        state.today.reading.score = Number(fill.score) || Number(state.today.reading.score) || 0;
-      }
-      if (targetModule === 'writing') {
-        state.today.writing.task = fill.task || state.today.writing.task || 'Task 1';
-        state.today.writing.wordCount = Number(fill.wordCount) || Number(state.today.writing.wordCount) || 0;
-        state.today.writing.completed = !!fill.completed || !!state.today.writing.completed;
-      }
-      if (targetModule === 'listening') {
-        state.today.listening.section = fill.section || state.today.listening.section || 'Part 1';
-        state.today.listening.score = Number(fill.score) || Number(state.today.listening.score) || 0;
-        state.today.listening.completed = !!fill.completed || !!state.today.listening.completed;
-      }
-      if (targetModule === 'speaking') {
-        state.today.speaking.questions = Number(fill.questions) || Number(state.today.speaking.questions) || 0;
-        state.today.speaking.topic = fill.topic || state.today.speaking.topic || '';
-      }
-
-      save();
-      renderAll();
-      window.open(link.href, '_blank', 'noopener,noreferrer');
-      e.preventDefault();
-    });
-  });
-  grid.querySelectorAll('[data-plan-index][data-plan-field]').forEach(el => {
-    el.addEventListener('input', onListeningPlanInput);
-  });
-  grid.querySelectorAll('button[data-plan-index]').forEach(btn => {
-    btn.addEventListener('click', onListeningPlanToggle);
-  });
-  grid.querySelectorAll('[data-open-weekly-plan]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      const panel = e.currentTarget.closest('[data-module="listening"]')?.querySelector('[data-weekly-plan-panel]');
-      if(panel) panel.classList.toggle('hidden');
-    });
-  });
-}
-
-function onFieldChange(e){
-  const el = e.target;
-  const [group, field] = el.dataset.field.split('.');
-  let value;
-  if (el.type === 'checkbox') value = el.checked;
-  else if (el.type === 'number') value = el.value === '' ? '' : Number(el.value);
-  else value = el.value;
-
-  state.today[group][field] = value;
-  save();
-  renderHero();
-  // update only this module's progress chip + bar without full re-render (keeps focus in inputs)
-  updateModuleHeader(group);
-}
-
-function onListeningPlanInput(e){
-  const el = e.target;
-  const index = Number(el.dataset.planIndex);
-  const field = el.dataset.planField;
-  if (!Number.isInteger(index) || !field) return;
-  state.listeningPlan.weeks[index][field] = el.value;
-  save();
-}
-
-function onListeningPlanToggle(e){
-  const btn = e.currentTarget;
-  const index = Number(btn.dataset.planIndex);
-  if (!Number.isInteger(index)) return;
-  state.listeningPlan.weeks[index].done = !state.listeningPlan.weeks[index].done;
-  save();
-  renderModules();
-}
-
-function updateModuleHeader(id){
-  const m = MODULES.find(x=>x.id===id);
-  if(!m) return;
-  const card = document.querySelector(`[data-module="${id}"]`)?.closest('.module-card');
-  if(!card) return;
-  const p = moduleProgress(id);
-  const pct = Math.round(p*100);
-  card.querySelector('.font-mono.font-700.text-lg').textContent = pct+'%';
-  card.querySelector('.bar-fill').style.width = pct+'%';
-  let doneTag = card.querySelector('.text-lime-500');
-  if(pct>=100 && !doneTag){
-    const holder = card.querySelector('.text-right');
-    holder.insertAdjacentHTML('beforeend', '<div class="text-[10px] text-lime-500 font-semibold">done ✓</div>');
-  } else if(pct<100 && doneTag){
-    doneTag.remove();
-  }
 }
 
 /* ---------------------------------------------------------
-   RENDER: VOCABULARY
+   RENDER: VOCABULARY & HISTORY & PERIOD SUMMARY
 --------------------------------------------------------- */
 const VOCAB_COLORS = { book1:'#FF6FA8', book2:'#FFB86B', book3:'#7FD1E0', book4:'#A78BFA' };
 
@@ -998,9 +1196,6 @@ function renderVocabTotal(){
   document.getElementById('vocabOverallBar').style.width = pct+'%';
 }
 
-/* ---------------------------------------------------------
-   RENDER: HISTORY
---------------------------------------------------------- */
 function renderHistory(){
   const list = document.getElementById('historyList');
   const empty = document.getElementById('historyEmpty');
@@ -1026,13 +1221,11 @@ function renderHistory(){
     </div>`;
   }).join('');
 
-  // wire delete buttons for each history item
   list.querySelectorAll('.history-delete-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const dateToRemove = btn.dataset.date;
       if (!dateToRemove) return;
-      // show custom confirm modal
       showConfirm('Delete this history entry for ' + new Date(dateToRemove+'T00:00:00').toLocaleDateString() + '?', () => {
         state.history = state.history.filter(h => h.date !== dateToRemove);
         save();
@@ -1041,75 +1234,51 @@ function renderHistory(){
       });
     });
   });
-
-  // history entries already include details for recent-period summaries
 }
 
-function formatDateLabel(dateISO){
-  const d = new Date(dateISO + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-}
-
-function getDetailsForDate(dateISO){
-  if (dateISO === state.activeDate) {
-    return { ...state.today, current: true };
-  }
-  const entry = state.history.find(h => h.date === dateISO);
-  return entry ? entry.details : null;
-}
-
-function renderHistoryDateDetails(dateISO){
-  const target = document.getElementById('historyDateDetails');
-  if (!dateISO) {
-    target.innerHTML = '<div class="text-ink-900/50 dark:text-paper-100/50">Iltimos, sanani tanlang.</div>';
-    return;
-  }
-  const details = getDetailsForDate(dateISO);
-  if (!details) {
-    target.innerHTML = `<div class="text-ink-900/50 dark:text-paper-100/50">${formatDateLabel(dateISO)} uchun yozuv topilmadi.</div>`;
+function renderPeriodSummary(days){
+  const cutoff = new Date(new Date().getTime() - days * 86400000);
+  const entries = state.history.filter(h => new Date(h.date+'T00:00:00') >= cutoff);
+  if(!entries.length){
+    document.getElementById('periodSummary').innerHTML = '<p class="text-ink-900/50 dark:text-paper-100/50">No data for this period.</p>';
     return;
   }
 
-  const reading = details.reading || {};
-  const writing = details.writing || {};
-  const listening = details.listening || {};
-  const speaking = details.speaking || {};
-  const bbcted = details.bbcted || {};
-
-  target.innerHTML = `
-    <div class="rounded-3xl border border-black/10 dark:border-white/10 bg-paper-50 dark:bg-ink-950 p-4">
-      <div class="font-semibold text-sm mb-3">${formatDateLabel(dateISO)}</div>
-      <div class="grid gap-3 sm:grid-cols-2">
-        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Reading</div>
-          <div class="font-medium text-sm">${reading.section || 'Part 1'} — ${reading.passages || 0} passages</div>
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${reading.score || '—'}</div>
-        </div>
-        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Writing</div>
-          <div class="font-medium text-sm">${writing.completed ? 'Completed' : 'Not completed'}</div>
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Word count: ${writing.wordCount || '—'}</div>
-        </div>
-        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Listening</div>
-          <div class="font-medium text-sm">${listening.section || 'Part 1'} ${listening.completed ? '• Completed' : '• Not completed'}</div>
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Score: ${listening.score || '—'}</div>
-        </div>
-        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10">
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">Speaking</div>
-          <div class="font-medium text-sm">${speaking.questions || 0} questions</div>
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50">Topic: ${speaking.topic || '—'}</div>
-        </div>
-        <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/10 sm:col-span-2">
-          <div class="text-[11px] text-ink-900/50 dark:text-paper-100/50 mb-1">BBC + TED</div>
-          <div class="font-medium text-sm">BBC: ${bbcted.bbc || 0}, TED: ${bbcted.ted || 0}</div>
-        </div>
-      </div>
-    </div>`;
+  const html = `
+    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">📖 Reading</div>
+      <div class="font-mono font-700 text-lg">${entries.length} logged days</div>
+    </div>
+    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">✍️ Writing</div>
+      <div class="font-mono font-700 text-lg">${entries.filter(e=>e.met).length} goal met</div>
+    </div>
+    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">🎧 Listening</div>
+      <div class="font-mono font-700 text-lg">${entries.length} days active</div>
+    </div>
+    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">📊 Streak Record</div>
+      <div class="font-mono font-700 text-lg">${state.bestStreak} max streak</div>
+    </div>
+  `;
+  document.getElementById('periodSummary').innerHTML = html;
 }
+
+document.querySelectorAll('.period-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('.period-btn').forEach(b => {
+      b.classList.remove('bg-lime-400/20', 'border-lime-400/50', 'text-lime-500');
+      b.classList.add('bg-black/5', 'dark:bg-white/10', 'border-black/10', 'dark:border-white/10');
+    });
+    e.target.classList.remove('bg-black/5', 'dark:bg-white/10', 'border-black/10', 'dark:border-white/10');
+    e.target.classList.add('bg-lime-400/20', 'border-lime-400/50', 'text-lime-500');
+    renderPeriodSummary(Number(e.target.dataset.period));
+  });
+});
 
 /* ---------------------------------------------------------
-   THEME
+   THEME & DIALOGS
 --------------------------------------------------------- */
 function applyTheme(){
   document.documentElement.classList.toggle('dark', state.theme === 'dark');
@@ -1121,9 +1290,6 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   applyTheme();
 });
 
-/* ---------------------------------------------------------
-   RESET DAY
---------------------------------------------------------- */
 function handleReset(){
   const pct = computeOverallPct();
   const msg = pct >= 100
@@ -1136,174 +1302,37 @@ function handleReset(){
 document.getElementById('resetDayBtn').addEventListener('click', handleReset);
 document.getElementById('resetDayBtnMobile').addEventListener('click', handleReset);
 
-/* ---------------------------------------------------------
-   INIT
---------------------------------------------------------- */
-function renderAll(){
-  applyTheme();
-  renderHero();
-  renderModules();
-  renderVocab();
-  renderHistory();
-  const datePicker = document.getElementById('historyDatePicker');
-  if (datePicker) datePicker.value = state.activeDate;
+let _confirmCallback = null;
+function showConfirm(message, onConfirm){
+  _confirmCallback = onConfirm || null;
+  const modal = document.getElementById('confirmModal');
+  document.getElementById('confirmMessage').textContent = message || 'Are you sure?';
+  modal.classList.remove('hidden');
 }
-renderAll();
-
-// Compute summary stats for a period (last N days from history)
-function computePeriodStats(days){
-  const now = new Date();
-  const cutoff = new Date(now.getTime() - days * 86400000);
-  const entries = state.history.filter(h => {
-    const hDate = new Date(h.date+'T00:00:00');
-    return hDate >= cutoff;
-  });
-  if(!entries.length) return null;
-  
-  const stats = {
-    reading: { passages: 0, score: 0, count: 0 },
-    writing: { completed: 0, count: 0 },
-    listening: { completed: 0, score: 0, count: 0 },
-    speaking: { questions: 0, count: 0 },
-    bbcted: { bbc: 0, ted: 0, count: 0 },
-  };
-  
-  entries.forEach(h => {
-    if(h.details){
-      if(h.details.reading){ stats.reading.passages += h.details.reading.passages || 0; stats.reading.count++; if(h.details.reading.score) stats.reading.score += Number(h.details.reading.score) || 0; }
-      if(h.details.writing){ if(h.details.writing.completed) stats.writing.completed++; stats.writing.count++; }
-      if(h.details.listening){ if(h.details.listening.completed) stats.listening.completed++; stats.listening.count++; if(h.details.listening.score) stats.listening.score += Number(h.details.listening.score) || 0; }
-      if(h.details.speaking){ stats.speaking.questions += h.details.speaking.questions || 0; stats.speaking.count++; }
-      if(h.details.bbcted){ stats.bbcted.bbc += h.details.bbcted.bbc || 0; stats.bbcted.ted += h.details.bbcted.ted || 0; stats.bbcted.count++; }
-    }
-  });
-  stats.daysLogged = entries.length;
-  return stats;
+function hideConfirm(){
+  document.getElementById('confirmModal').classList.add('hidden');
+  _confirmCallback = null;
 }
-
-function renderPeriodSummary(days){
-  const stats = computePeriodStats(days);
-  if(!stats){
-    document.getElementById('periodSummary').innerHTML = '<p class="text-ink-900/50 dark:text-paper-100/50">No data for this period.</p>';
-    return;
-  }
-  
-  const html = `
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">📖 Reading</div>
-      <div class="font-mono font-700 text-lg">${stats.reading.passages} passages</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">in ${stats.reading.count} day(s)</div>
-    </div>
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">✍️ Writing</div>
-      <div class="font-mono font-700 text-lg">${stats.writing.completed} completed</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">of ${stats.writing.count} day(s)</div>
-    </div>
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">🎧 Listening</div>
-      <div class="font-mono font-700 text-lg">${stats.listening.completed} completed</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">of ${stats.listening.count} day(s)</div>
-    </div>
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">🎙️ Speaking</div>
-      <div class="font-mono font-700 text-lg">${stats.speaking.questions} Q's</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">in ${stats.speaking.count} day(s)</div>
-    </div>
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">🌐 BBC+TED</div>
-      <div class="font-mono font-700 text-lg">${stats.bbcted.bbc + stats.bbcted.ted} total</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">${stats.bbcted.bbc} BBC + ${stats.bbcted.ted} TED</div>
-    </div>
-    <div class="rounded-2xl p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-      <div class="text-[11px] text-ink-900/60 dark:text-paper-100/60 mb-1">📊 Days logged</div>
-      <div class="font-mono font-700 text-lg">${stats.daysLogged}</div>
-      <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">completed goals</div>
-    </div>
-  `;
-  document.getElementById('periodSummary').innerHTML = html;
-}
-
-// Wire period selector buttons
-document.querySelectorAll('.period-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    // update active state
-    document.querySelectorAll('.period-btn').forEach(b => {
-      b.classList.remove('bg-lime-400/20', 'border-lime-400/50', 'text-lime-500');
-      b.classList.add('bg-black/5', 'dark:bg-white/10', 'border-black/10', 'dark:border-white/10');
-    });
-    e.target.classList.remove('bg-black/5', 'dark:bg-white/10', 'border-black/10', 'dark:border-white/10');
-    e.target.classList.add('bg-lime-400/20', 'border-lime-400/50', 'text-lime-500');
-    
-    const days = Number(e.target.dataset.period);
-    renderPeriodSummary(days);
-  });
+document.getElementById('confirmCancelBtn').addEventListener('click', hideConfirm);
+document.getElementById('confirmOkBtn').addEventListener('click', () => {
+  const cb = _confirmCallback;
+  hideConfirm();
+  if(typeof cb === 'function') cb();
 });
 
-// Init with default 3 days
-renderPeriodSummary(3);
-
-// CSV export: build CSV from history and download
-function buildHistoryCSV(){
-  if(!state.history || !state.history.length) return null;
-  const headers = [
-    'date', 'pct', 'met',
-    'reading_section','reading_passages','reading_score',
-    'writing_completed','writing_wordCount',
-    'listening_completed','listening_score',
-    'speaking_questions',
-    'bbcted_bbc','bbcted_ted'
-  ];
-  const rows = [headers.join(',')];
-  state.history.forEach(h => {
-    const d = h.date || '';
-    const pct = h.pct != null ? h.pct : '';
-    const met = h.met ? '1' : '0';
-    const det = h.details || {};
-    const r_section = det.reading ? (det.reading.section||'Part 1') : '';
-    const r_pass = det.reading ? (det.reading.passages||0) : '';
-    const r_score = det.reading ? (det.reading.score||'') : '';
-    const w_comp = det.writing ? (det.writing.completed ? '1' : '0') : '';
-    const w_wc = det.writing ? (det.writing.wordCount||'') : '';
-    const l_comp = det.listening ? (det.listening.completed ? '1' : '0') : '';
-    const l_score = det.listening ? (det.listening.score||'') : '';
-    const s_q = det.speaking ? (det.speaking.questions||'') : '';
-    const b_bbc = det.bbcted ? (det.bbcted.bbc||'') : '';
-    const b_ted = det.bbcted ? (det.bbcted.ted||'') : '';
-    const row = [d,pct,met,r_section,r_pass,r_score,w_comp,w_wc,l_comp,l_score,s_q,b_bbc,b_ted]
-      .map(v => typeof v === 'string' ? '"'+v.replace(/"/g,'""')+'"' : v)
-      .join(',');
-    rows.push(row);
-  });
-  return rows.join('\n');
-}
-
+/* CSV & Backup */
 function downloadCSV(){
-  const csv = buildHistoryCSV();
-  if(!csv){ alert('No history to export.'); return; }
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  if(!state.history || !state.history.length){ alert('No history to export.'); return; }
+  const headers = ['date', 'pct', 'met'];
+  const rows = [headers.join(',')];
+  state.history.forEach(h => rows.push(`${h.date},${h.pct},${h.met?'1':'0'}`));
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `study-history-${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = `study-history-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
-
 document.getElementById('exportCsvBtn').addEventListener('click', downloadCSV);
 
-
-// Mobile optimization: better touch targets and responsive navbar (small)
-function enableMobileTweaks(){
-  document.body.classList.add('touch-friendly');
-  // make header buttons visible on small screens when touch
-  document.querySelectorAll('#exportCsvBtn,#backupBtn,#pomodoroBtn,#profileBtn,#printBtn,label[for="importJson"]').forEach(el => el.classList.remove('hidden'));
-}
-// call for now to enable mobile-friendly sizes
-enableMobileTweaks();
-
-// Backup / Import JSON
 document.getElementById('backupBtn').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1311,12 +1340,12 @@ document.getElementById('backupBtn').addEventListener('click', () => {
 });
 document.getElementById('importJson').addEventListener('change', e => {
   const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = ev => {
-    try{ const imported = JSON.parse(ev.target.result); state = Object.assign(defaultState(), imported); save(); renderAll(); alert('Import successful'); }
+    try{ state = Object.assign(defaultState(), JSON.parse(ev.target.result)); save(); renderAll(); alert('Import successful'); }
     catch(err){ alert('Invalid JSON file'); }
   }; reader.readAsText(f);
 });
 
-// Profile modal wiring
+/* Profile Modal */
 document.getElementById('profileBtn').addEventListener('click', () => {
   document.getElementById('profileModal').classList.remove('hidden');
   const p = state.profile || {};
@@ -1329,9 +1358,9 @@ document.getElementById('saveProfile').addEventListener('click', () => {
   save(); document.getElementById('profileModal').classList.add('hidden');
 });
 
-// Pomodoro logic
-let pomInterval = null; let pomRemaining = 0; let pomMode = 'work';
-function formatTime(s){ const m = Math.floor(s/60); const sec = s%60; return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}` }
+/* Pomodoro Timer */
+let pomInterval = null, pomRemaining = 0, pomMode = 'work';
+function formatTime(s){ return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}` }
 function updatePomDisplay(){ document.getElementById('pomDisplay').textContent = formatTime(pomRemaining); }
 document.getElementById('pomodoroBtn').addEventListener('click', () => document.getElementById('pomodoroModal').classList.remove('hidden'));
 document.getElementById('closePom').addEventListener('click', () => document.getElementById('pomodoroModal').classList.add('hidden'));
@@ -1339,123 +1368,29 @@ document.getElementById('pomStart').addEventListener('click', () => {
   const work = Math.max(1, Number(document.getElementById('pomWork').value)||25);
   const br = Math.max(1, Number(document.getElementById('pomBreak').value)||5);
   if(pomInterval) return; if(pomRemaining===0) pomRemaining = work*60; pomMode='work'; updatePomDisplay();
-  pomInterval = setInterval(()=>{ pomRemaining--; if(pomRemaining<=0){ clearInterval(pomInterval); pomInterval=null; // swap mode
-    if(pomMode==='work'){ pomMode='break'; pomRemaining = br*60; notify('Work session complete — time for a break'); }
-    else { pomMode='work'; pomRemaining = work*60; notify('Break finished — back to work'); }
-    updatePomDisplay(); document.getElementById('pomStart').textContent='Start'; }
-    updatePomDisplay(); }, 1000);
+  pomInterval = setInterval(()=>{ pomRemaining--; if(pomRemaining<=0){ clearInterval(pomInterval); pomInterval=null;
+    if(pomMode==='work'){ pomMode='break'; pomRemaining = br*60; alert('Work session complete — break time!'); }
+    else { pomMode='work'; pomRemaining = work*60; alert('Break finished — back to work!'); }
+    updatePomDisplay(); } updatePomDisplay(); }, 1000);
 });
-document.getElementById('pomPause').addEventListener('click', () => { if(pomInterval){ clearInterval(pomInterval); pomInterval=null; } else { /* resume */ } });
+document.getElementById('pomPause').addEventListener('click', () => { if(pomInterval){ clearInterval(pomInterval); pomInterval=null; } });
 document.getElementById('pomReset').addEventListener('click', () => { if(pomInterval){ clearInterval(pomInterval); pomInterval=null; } pomRemaining = 0; updatePomDisplay(); });
-
-// Notifications / reminders helper
-function notify(msg){ if('Notification' in window){ if(Notification.permission==='granted'){ new Notification(msg); } else if(Notification.permission!=='denied'){ Notification.requestPermission().then(p=>{ if(p==='granted') new Notification(msg); }); } } else { alert(msg); } }
-
-// Custom notification flow: show a centered modal explaining permission
-let _pendingNotificationMessage = '';
-function showNotificationPermissionModal(message){
-  _pendingNotificationMessage = message || '';
-  const modal = document.getElementById('notifPermissionModal');
-  const msgEl = document.getElementById('notifPermMessage');
-  if(msgEl) msgEl.textContent = message || 'Get gentle reminders for pomodoro and study milestones.';
-  modal.classList.remove('hidden');
-}
-
-document.getElementById('notifAllowBtn').addEventListener('click', () => {
-  const modal = document.getElementById('notifPermissionModal');
-  modal.classList.add('hidden');
-  // request browser permission (this will trigger native prompt)
-  Notification.requestPermission().then(p => {
-    if(p === 'granted'){
-      try{ new Notification(_pendingNotificationMessage || 'Notifications enabled'); }
-      catch(e){ /* ignore */ }
-    } else {
-      // user denied or dismissed — no further action
-    }
-    _pendingNotificationMessage = '';
-  }).catch(err => { _pendingNotificationMessage = ''; });
-});
-
-document.getElementById('notifCancelBtn').addEventListener('click', () => {
-  const modal = document.getElementById('notifPermissionModal');
-  modal.classList.add('hidden');
-  _pendingNotificationMessage = '';
-});
-
-function notify(msg){
-  if (!('Notification' in window)) { alert(msg); return; }
-  if (Notification.permission === 'granted') {
-    try{ new Notification(msg); } catch(e){ alert(msg); }
-    return;
-  }
-  // If denied, fall back to alert
-  if (Notification.permission === 'denied') { alert(msg); return; }
-  // permission is 'default' — show a friendly centered modal first
-  showNotificationPermissionModal(msg || 'You have a new reminder');
-}
-
-// Generic confirm modal helpers
-let _confirmCallback = null;
-function showConfirm(message, onConfirm){
-  _confirmCallback = onConfirm || null;
-  const modal = document.getElementById('confirmModal');
-  const msgEl = document.getElementById('confirmMessage');
-  if(msgEl) msgEl.textContent = message || 'Are you sure?';
-  modal.classList.remove('hidden');
-}
-
-function hideConfirm(){
-  const modal = document.getElementById('confirmModal');
-  modal.classList.add('hidden');
-  _confirmCallback = null;
-}
-
-document.getElementById('confirmCancelBtn').addEventListener('click', () => {
-  hideConfirm();
-});
-
-document.getElementById('confirmOkBtn').addEventListener('click', () => {
-  const cb = _confirmCallback;
-  hideConfirm();
-  if(typeof cb === 'function') cb();
-});
-
-// Print button
 document.getElementById('printBtn').addEventListener('click', () => window.print());
 
-document.getElementById('historyCalendarBtn').addEventListener('click', () => {
-  document.getElementById('historyCalendarPanel').classList.toggle('hidden');
-});
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
+function renderAll(){
+  applyTheme();
+  renderHero();
+  renderModules();
+  renderVocab();
+  renderHistory();
+  renderPeriodSummary(3);
+  handleRouteUpdate();
+}
 
-document.getElementById('historyDateShowBtn').addEventListener('click', () => {
-  const date = document.getElementById('historyDatePicker').value;
-  renderHistoryDateDetails(date);
-});
-
-// History search/filter
-document.getElementById('historySearch').addEventListener('input', (e)=>{
-  const q = e.target.value.trim().toLowerCase(); if(!q) { renderHistory(); return; }
-  const filtered = state.history.filter(h => {
-    if(h.date && h.date.includes(q)) return true;
-    if(String(h.pct||'').includes(q)) return true;
-    const d = h.details||{};
-    // check simple keys
-    if(q.includes('read') && d.reading && (d.reading.passages||0)>0) return true;
-    if(q.includes('write') && d.writing && d.writing.completed) return true;
-    if(q.includes('listen') && d.listening && d.listening.completed) return true;
-    if(q.includes('speak') && d.speaking && (d.speaking.questions||0)>0) return true;
-    return false;
-  });
-  const list = document.getElementById('historyList'); list.innerHTML = filtered.map(h=>{
-    const d = new Date(h.date+'T00:00:00').toLocaleDateString('en-US',{month:'short', day:'numeric'});
-    return `<div class="flex items-center justify-between px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5">
-      <span class="font-medium">${d}</span>
-      <div class="flex items-center gap-3"><span class="font-mono text-xs">${h.pct}%</span></div></div>`;
-  }).join('');
-});
-
-// Small accessibility tweaks: focus outlines already exist; ensure buttons have aria-labels
-document.querySelectorAll('button').forEach(b => { if(!b.getAttribute('aria-label')) b.setAttribute('aria-label', b.textContent.trim().slice(0,20)); });
+renderAll();
 </script>
 </body>
 </html>
