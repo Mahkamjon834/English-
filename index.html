@@ -73,22 +73,40 @@
     border-color: rgba(196, 241, 53, 0.5);
     color: #C4F135;
   }
+  /* Smooth horizontal scrollbar hiding for clean mobile tabs */
+  #routeNavTabs, #breadcrumbTrail {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #routeNavTabs::-webkit-scrollbar, #breadcrumbTrail::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (max-width: 640px) {
-    .touch-friendly button, .touch-friendly .rounded-xl, .touch-friendly .rounded-lg {
-      padding-top: 0.6rem !important;
-      padding-bottom: 0.6rem !important;
-      padding-left: 0.9rem !important;
-      padding-right: 0.9rem !important;
+    body { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .max-w-6xl { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .module-card, .glass { padding: 1rem !important; border-radius: 1.25rem !important; }
+    
+    /* Clean, sleek input & select sizing on mobile (no huge bloated elements) */
+    input[type="number"], input[type="text"], select {
+      font-size: 14px !important;
+      padding-top: 0.45rem !important;
+      padding-bottom: 0.45rem !important;
+      padding-left: 0.65rem !important;
+      padding-right: 0.65rem !important;
+      border-radius: 0.625rem !important;
+      min-height: 38px !important;
     }
-    input[type="number"], input[type="text"], select, button {
-      font-size: 16px !important;
-      line-height: 1.2 !important;
-      min-height: 44px !important;
+    
+    /* Proportional button sizing on mobile - removes oversized min-height */
+    button {
+      font-size: 13px !important;
+      line-height: 1.25 !important;
     }
-    .module-card, .glass { padding: 1.25rem !important; }
-    #ringWrap { width: 28vw !important; height: 28vw !important; max-width: 160px !important; max-height: 160px !important; }
+
+    .modal-content { max-width: 92% !important; width: 92% !important; padding: 16px !important; border-radius: 1.25rem !important; }
+    #ringWrap { width: 130px !important; height: 130px !important; }
     #ringWrap .ring-track > div { width: 76% !important; height: 76% !important; }
-    .modal-content { max-width: 96% !important; width: 96% !important; padding: 16px !important; }
   }
   .notif-perm-modal .modal-content {
     max-width: 420px; width: 92%; border-radius: 16px; padding: 18px; background: var(--bg, rgba(255,255,255,0.96));
@@ -105,12 +123,12 @@
 </head>
 <body class="bg-paper-50 dark:bg-ink-950 text-ink-900 dark:text-paper-100 font-body transition-colors duration-300 min-h-screen">
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
+<div class="max-w-6xl mx-auto px-3 sm:px-6 pb-24">
 
   <!-- Top Bar & Header -->
-  <header class="flex flex-wrap items-center justify-between gap-3 pt-6 pb-3">
+  <header class="flex items-center justify-between gap-3 pt-5 pb-3">
     <div class="flex items-center gap-3">
-      <a href="#home" class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass hover:scale-105 transition">M.C</a>
+      <a href="#home" class="w-10 h-10 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-lg shadow-glass hover:scale-105 transition flex-shrink-0">M.C</a>
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-display font-700 text-lg sm:text-xl leading-tight">Study Log</h1>
@@ -119,31 +137,47 @@
         <p class="text-xs text-ink-900/50 dark:text-paper-100/50 font-mono" id="todayDateLabel">—</p>
       </div>
     </div>
-    <div class="flex flex-wrap items-center gap-2">
-      <button id="themeToggle" aria-label="Toggle dark or light mode" class="w-10 h-10 rounded-xl glass grid place-items-center hover:brightness-110 transition">
+
+    <!-- Action Buttons & Hamburger Menu (Available on ALL Devices) -->
+    <div class="flex items-center gap-2">
+      <!-- Desktop Quick Actions -->
+      <div class="hidden md:flex items-center gap-2">
+        <button id="exportCsvBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Export history as CSV">
+          ⤓ Export CSV
+        </button>
+        <button id="backupBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Download JSON backup">
+          💾 Backup
+        </button>
+        <label for="importJson" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition cursor-pointer" title="Import JSON backup">
+          ... Import
+        </label>
+        <input id="importJson" type="file" accept="application/json" class="hidden">
+        <button id="pomodoroBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Open Pomodoro timer">
+          ⏱ Pomodoro
+        </button>
+        <button id="profileBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Profile & targets">
+          👤 Profile
+        </button>
+        <button id="resetDayBtn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
+          <span>↻</span> New day
+        </button>
+        <button id="printBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Print report">
+          🖨 Print
+        </button>
+      </div>
+
+      <!-- Theme Toggle (All Devices) -->
+      <button id="themeToggle" aria-label="Toggle dark or light mode" class="w-10 h-10 rounded-xl glass grid place-items-center hover:brightness-110 transition flex-shrink-0">
         <span id="themeIcon">🌙</span>
       </button>
-      <button id="exportCsvBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Export history as CSV">
-        ⤓ Export CSV
-      </button>
-      <button id="backupBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Download JSON backup">
-        💾 Backup
-      </button>
-      <label for="importJson" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition cursor-pointer" title="Import JSON backup">
-        ⤒ Import
-      </label>
-      <input id="importJson" type="file" accept="application/json" class="hidden">
-      <button id="pomodoroBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Open Pomodoro timer">
-        ⏱ Pomodoro
-      </button>
-      <button id="profileBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Profile & targets">
-        👤 Profile
-      </button>
-      <button id="resetDayBtn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
-        <span>↻</span> New day
-      </button>
-      <button id="printBtn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl glass text-xs font-semibold hover:brightness-110 transition" title="Print report">
-        🖨 Print
+
+      <!-- Hamburger Menu Icon (Visible on ALL devices: PC, Laptop, Tablet, Mobile) -->
+      <button id="mobileMenuBtn" aria-label="Open menu drawer" class="w-10 h-10 rounded-xl glass grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0" title="Menyu">
+        <svg class="w-6 h-6 text-ink-900 dark:text-paper-100" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
       </button>
     </div>
   </header>
@@ -325,6 +359,75 @@
       </div>
     </div>
   </div>
+
+  <!-- Mobile Hamburger Menu Drawer Modal -->
+  <div id="mobileMenuModal" class="fixed inset-0 z-50 hidden transition-opacity duration-300">
+    <div id="mobileMenuBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    
+    <div class="absolute right-0 top-0 bottom-0 w-[82%] max-w-xs bg-paper-50 dark:bg-ink-950 p-5 shadow-2xl flex flex-col justify-between border-l border-black/10 dark:border-white/10 overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-black/10 dark:border-white/10">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-lime-400 text-ink-950 grid place-items-center font-display font-700 text-sm shadow-md">M.C</div>
+            <div>
+              <h3 class="font-display font-700 text-sm leading-none">Menyu</h3>
+              <span class="text-[10px] text-lime-500 font-semibold font-mono uppercase">IELTS Pro</span>
+            </div>
+          </div>
+          <button id="closeMobileMenu" class="w-8 h-8 rounded-xl glass grid place-items-center text-sm font-bold hover:bg-black/10 dark:hover:bg-white/10 transition">
+            ✕
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Section 1: Main Tools -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-ink-900/40 dark:text-paper-100/40 mb-2 px-1">Asosiy uskunalar</div>
+            <div class="space-y-1.5">
+              <button id="mobilePomodoroBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left">
+                <span class="text-base">⏱</span> Pomodoro Timer
+              </button>
+              <button id="mobileProfileBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left">
+                <span class="text-base">👤</span> Profil va Maqsadlar
+              </button>
+              <button id="mobilePrintBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left">
+                <span class="text-base">🖨</span> Chop etish (Print)
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: Data & Backup -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-ink-900/40 dark:text-paper-100/40 mb-2 px-1">Ma'lumotlar va Zaxira</div>
+            <div class="space-y-1.5">
+              <button id="mobileExportCsvBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left">
+                <span class="text-base">⤓</span> Export CSV
+              </button>
+              <button id="mobileBackupBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left">
+                <span class="text-base">💾</span> Backup JSON
+              </button>
+              <label for="mobileImportJson" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl glass text-xs font-semibold hover:bg-lime-400/10 transition text-left cursor-pointer">
+                <span class="text-base">⤒</span> Import JSON
+              </label>
+              <input id="mobileImportJson" type="file" accept="application/json" class="hidden">
+            </div>
+          </div>
+
+          <!-- Section 3: Day Reset -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-ink-900/40 dark:text-paper-100/40 mb-2 px-1">Kunni yangilash</div>
+            <button id="mobileResetDayBtn" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-lime-400 text-ink-950 text-xs font-bold hover:brightness-110 transition text-left shadow-md">
+              <span class="text-base">↻</span> Yangi kun boshlash
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-black/10 dark:border-white/10 text-center">
+        <p class="text-[10px] text-ink-900/40 dark:text-paper-100/40">Study Log v2.0 • IELTS Tracker</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -417,26 +520,26 @@ function blankPartState(){
     writing: {
       activePart: 'task1',
       parts: {
-        task1: { wordCount: '', completed: false },
-        task2: { wordCount: '', completed: false },
+        task1: { count: 0, wordCount: '', completed: false },
+        task2: { count: 0, wordCount: '', completed: false },
       }
     },
     listening: {
       activePart: 'part1',
       parts: {
-        part1: { score: '', completed: false },
-        part2: { score: '', completed: false },
-        part3: { score: '', completed: false },
-        part4: { score: '', completed: false },
-        full:  { score: '', completed: false },
+        part1: { count: 0, score: '', completed: false },
+        part2: { count: 0, score: '', completed: false },
+        part3: { count: 0, score: '', completed: false },
+        part4: { count: 0, score: '', completed: false },
+        full:  { count: 0, score: '', completed: false },
       }
     },
     speaking: {
       activePart: 'part1',
       parts: {
-        part1: { questions: 0, topic: '', completed: false },
-        part2: { questions: 0, topic: '', completed: false },
-        part3: { questions: 0, topic: '', completed: false },
+        part1: { count: 0, questions: 0, topic: '', completed: false },
+        part2: { count: 0, questions: 0, topic: '', completed: false },
+        part3: { count: 0, questions: 0, topic: '', completed: false },
       }
     },
     bbcted: {
@@ -599,28 +702,38 @@ function partProgress(moduleId, partId){
     case 'reading': {
       const cfg = MODULE_CONFIG.reading.parts.find(p=>p.id===partId);
       const score = Number(partData.score);
-      if(!isNaN(score) && partData.score !== '') return Math.min(1, score / (cfg ? cfg.maxScore : 13));
       const passages = Number(partData.passages) || 0;
-      return Math.min(1, passages / (cfg ? cfg.maxScore : 13));
+      if (partData.completed) return 1;
+      if (!isNaN(score) && partData.score !== '') {
+        return Math.min(1, score / (cfg ? cfg.maxScore : 13));
+      }
+      return passages >= 1 ? 1 : 0;
     }
     case 'writing': {
       const cfg = MODULE_CONFIG.writing.parts.find(p=>p.id===partId);
       const targetWords = cfg ? cfg.targetWords : 150;
       const words = Number(partData.wordCount) || 0;
+      const count = Number(partData.count) || 0;
       const wordProgress = Math.min(1, words / targetWords);
-      return partData.completed ? 1 : wordProgress;
+      const countProgress = count >= 1 ? 1 : 0;
+      return partData.completed ? 1 : Math.max(wordProgress, countProgress);
     }
     case 'listening': {
       const cfg = MODULE_CONFIG.listening.parts.find(p=>p.id===partId);
       const score = Number(partData.score);
+      const count = Number(partData.count) || 0;
       const scoreProgress = (!isNaN(score) && partData.score !== '') ? Math.min(1, score / (cfg ? cfg.maxScore : 10)) : 0;
-      return partData.completed ? 1 : scoreProgress;
+      const countProgress = count >= 1 ? 1 : 0;
+      return partData.completed ? 1 : Math.max(scoreProgress, countProgress);
     }
     case 'speaking': {
       const cfg = MODULE_CONFIG.speaking.parts.find(p=>p.id===partId);
       const q = Number(partData.questions) || 0;
+      const count = Number(partData.count) || 0;
       const target = cfg ? cfg.targetQuestions : 5;
-      return partData.completed ? 1 : Math.min(1, q / target);
+      const qProg = Math.min(1, q / target);
+      const cProg = count >= 1 ? 1 : 0;
+      return partData.completed ? 1 : Math.max(qProg, cProg);
     }
     case 'bbcted': {
       const cfg = MODULE_CONFIG.bbcted.parts.find(p=>p.id===partId);
@@ -782,6 +895,50 @@ window.addEventListener('hashchange', handleRouteUpdate);
 /* ---------------------------------------------------------
    RENDER: FOCUSED MODULE & PART VIEW
 --------------------------------------------------------- */
+function updateFocusedRouteProgress(moduleId, activePartId){
+  const mCfg = MODULE_CONFIG[moduleId];
+  if(!mCfg) return;
+  const container = document.getElementById('focusedRouteSection');
+  if(!container) return;
+
+  const partCfg = mCfg.parts.find(p=>p.id===activePartId) || mCfg.parts[0];
+  const pProg = partProgress(moduleId, partCfg.id);
+  const pPct = Math.round(pProg * 100);
+  const mProg = moduleProgress(moduleId);
+  const mPct = Math.round(mProg * 100);
+
+  const modPctEl = container.querySelector('.module-overall-pct');
+  if(modPctEl) modPctEl.textContent = mPct + '%';
+
+  const partRingPctEl = container.querySelector('.part-ring-pct');
+  if(partRingPctEl) partRingPctEl.textContent = pPct + '%';
+
+  const partRingWrap = container.querySelector('.part-ring-wrap');
+  if(partRingWrap) partRingWrap.style.setProperty('--pct', pPct);
+
+  const partBarFill = container.querySelector('.part-bar-fill');
+  if(partBarFill) partBarFill.style.width = pPct + '%';
+
+  const partCompletionPct = container.querySelector('.part-completion-pct');
+  if(partCompletionPct) partCompletionPct.textContent = pPct + '%';
+
+  const badgeWrap = container.querySelector('.part-complete-badge');
+  if(badgeWrap) {
+    if(pPct >= 100) badgeWrap.classList.remove('hidden');
+    else badgeWrap.classList.add('hidden');
+  }
+
+  mCfg.parts.forEach(p => {
+    const prog = Math.round(partProgress(moduleId, p.id) * 100);
+    const tabBadge = container.querySelector(`[data-part-tab-badge="${p.id}"]`);
+    if(tabBadge) tabBadge.textContent = prog + '%';
+    const sumPct = container.querySelector(`[data-part-summary-pct="${p.id}"]`);
+    if(sumPct) sumPct.textContent = prog + '%';
+    const sumBar = container.querySelector(`[data-part-summary-bar="${p.id}"]`);
+    if(sumBar) sumBar.style.width = prog + '%';
+  });
+}
+
 function renderFocusedRouteView(moduleId, activePartId){
   const mCfg = MODULE_CONFIG[moduleId];
   if(!mCfg) return;
@@ -811,7 +968,7 @@ function renderFocusedRouteView(moduleId, activePartId){
             <span class="text-2xl">${mCfg.icon}</span>
             <h2 class="font-display font-700 text-2xl">${mCfg.name} Module</h2>
           </div>
-          <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Module Overall Progress: <strong style="color:${mCfg.accent}">${mPct}%</strong> across all parts.</p>
+          <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Module Overall Progress: <strong class="module-overall-pct" style="color:${mCfg.accent}">${mPct}%</strong> across all parts.</p>
         </div>
         <div class="flex items-center gap-3">
           <a href="#home" class="px-3 py-1.5 rounded-xl glass text-xs font-semibold hover:brightness-110 transition">
@@ -831,7 +988,7 @@ function renderFocusedRouteView(moduleId, activePartId){
                class="flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition whitespace-nowrap border ${isSelected ? 'shadow-md' : 'bg-black/5 dark:bg-white/5 border-transparent text-ink-900/70 dark:text-paper-100/70 hover:brightness-110'}"
                style="${isSelected ? `background:${mCfg.accent}; color:#0A0D1A; border-color:${mCfg.accent}` : ''}">
               <span>${p.name}</span>
-              <span class="px-1.5 py-0.5 rounded-full text-[10px] ${isSelected ? 'bg-black/20 text-black' : 'bg-black/10 dark:bg-white/10'}">${currProg}%</span>
+              <span data-part-tab-badge="${p.id}" class="px-1.5 py-0.5 rounded-full text-[10px] ${isSelected ? 'bg-black/20 text-black' : 'bg-black/10 dark:bg-white/10'}">${currProg}%</span>
             </a>
           `;
         }).join('')}
@@ -872,11 +1029,11 @@ function renderFocusedRouteView(moduleId, activePartId){
             ${partCfg.name} Progress
           </div>
 
-          <div class="ring-wrap relative w-32 h-32 my-2" style="--ring-color:${mCfg.accent}; --pct:${pPct};">
+          <div class="ring-wrap part-ring-wrap relative w-32 h-32 my-2" style="--ring-color:${mCfg.accent}; --pct:${pPct};">
             <div class="ring-track w-full h-full rounded-full grid place-items-center">
               <div class="w-[78%] h-[78%] rounded-full bg-paper-50 dark:bg-ink-950 grid place-items-center">
                 <div>
-                  <div class="font-mono font-700 text-2xl" style="color:${mCfg.accent}">${pPct}%</div>
+                  <div class="font-mono font-700 text-2xl part-ring-pct" style="color:${mCfg.accent}">${pPct}%</div>
                   <div class="text-[9px] uppercase tracking-wider text-ink-900/50 dark:text-paper-100/50">Part score</div>
                 </div>
               </div>
@@ -886,18 +1043,16 @@ function renderFocusedRouteView(moduleId, activePartId){
           <div class="w-full mt-3">
             <div class="text-xs font-semibold mb-1 flex justify-between">
               <span>Part Completion</span>
-              <span>${pPct}%</span>
+              <span class="part-completion-pct">${pPct}%</span>
             </div>
             <div class="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
-              <div class="bar-fill h-full rounded-full" style="width:${pPct}%; background:${mCfg.accent}"></div>
+              <div class="bar-fill part-bar-fill h-full rounded-full" style="width:${pPct}%; background:${mCfg.accent}"></div>
             </div>
           </div>
 
-          ${pPct >= 100 ? `
-            <div class="mt-4 px-3 py-1 rounded-full bg-lime-400/20 text-lime-500 font-bold text-xs flex items-center gap-1">
-              <span>🎉 Part Complete!</span>
-            </div>
-          ` : ''}
+          <div class="part-complete-badge mt-4 px-3 py-1 rounded-full bg-lime-400/20 text-lime-500 font-bold text-xs flex items-center gap-1 ${pPct >= 100 ? '' : 'hidden'}">
+            <span>🎉 Part Complete!</span>
+          </div>
         </div>
       </div>
 
@@ -913,10 +1068,10 @@ function renderFocusedRouteView(moduleId, activePartId){
               <a href="#${moduleId}/${p.id}" class="rounded-xl p-3 border transition ${isAct ? 'border-lime-400/50 bg-lime-400/10' : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 hover:bg-black/10'}">
                 <div class="flex items-center justify-between text-xs font-bold mb-1">
                   <span>${p.name}</span>
-                  <span class="font-mono" style="color:${mCfg.accent}">${pct}%</span>
+                  <span data-part-summary-pct="${p.id}" class="font-mono" style="color:${mCfg.accent}">${pct}%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden mb-2">
-                  <div class="h-full rounded-full" style="width:${pct}%; background:${mCfg.accent}"></div>
+                  <div data-part-summary-bar="${p.id}" class="h-full rounded-full" style="width:${pct}%; background:${mCfg.accent}"></div>
                 </div>
                 <div class="text-[10px] text-ink-900/50 dark:text-paper-100/50">
                   Target: ${p.targetLabel}
@@ -930,7 +1085,7 @@ function renderFocusedRouteView(moduleId, activePartId){
     </div>
   `;
 
-  // Attach event listeners to input fields
+  // Attach event listeners to input fields without triggering full DOM teardown
   container.querySelectorAll('[data-part-field]').forEach(input => {
     const evt = (input.tagName === 'SELECT' || input.type === 'checkbox') ? 'change' : 'input';
     input.addEventListener(evt, (e) => {
@@ -943,7 +1098,7 @@ function renderFocusedRouteView(moduleId, activePartId){
       state.today[moduleId].parts[activePartId][field] = val;
       save();
       renderHero();
-      renderFocusedRouteView(moduleId, activePartId);
+      updateFocusedRouteProgress(moduleId, activePartId);
     });
   });
 }
@@ -956,67 +1111,83 @@ function renderPartFormInputs(moduleId, partCfg){
     return `
       <div class="grid sm:grid-cols-2 gap-4 mb-4">
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Passages / Tasks Completed</span>
-          <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="passages" value="${pData.passages ?? ''}" placeholder="0"
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Bajarilgan Matnlar Soni (Passages Count)</span>
+          <input type="number" min="0" data-part-field="passages" value="${pData.passages ?? ''}" placeholder="Masalan: 1, 2 yoki 3"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Score (out of ${partCfg.maxScore})</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Ball / Natija (out of ${partCfg.maxScore})</span>
           <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="score" value="${pData.score ?? ''}" placeholder="Score"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
       </div>
-      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Enter the number of correct answers or completed tasks for ${partCfg.name}.</p>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Bugun nechta ${partCfg.name} matni bajarganingiz (1, 2, 3...) va to'plagan balingizni kiriting.</p>
     `;
   }
   
   if(moduleId === 'writing'){
     return `
-      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+      <div class="grid sm:grid-cols-3 gap-4 mb-4">
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Word Count Written</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Bajarilgan Matnlar Soni</span>
+          <input type="number" min="0" data-part-field="count" value="${pData.count ?? ''}" placeholder="Masalan: 1, 2, 3..."
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Yozilgan So'zlar Soni (Word Count)</span>
           <input type="number" min="0" data-part-field="wordCount" value="${pData.wordCount ?? ''}" placeholder="e.g. 170"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
-        <div class="flex items-center pt-5">
+        <div class="flex items-center pt-4">
           <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
             <input type="checkbox" class="chk" style="--chk-color:#B98CE8" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
-            <span>Mark ${partCfg.name} as Completed</span>
+            <span>Bajarildi</span>
           </label>
         </div>
       </div>
-      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Target is ${partCfg.targetWords} words for ${partCfg.name}.</p>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Maqsad: ${partCfg.targetWords} so'z yoki 1+ insho yozish.</p>
     `;
   }
 
   if(moduleId === 'listening'){
     return `
-      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+      <div class="grid sm:grid-cols-3 gap-4 mb-4">
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Score (out of ${partCfg.maxScore})</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Bajarilgan Testlar Soni</span>
+          <input type="number" min="0" data-part-field="count" value="${pData.count ?? ''}" placeholder="Masalan: 1, 2, 3..."
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Ball / Natija (out of ${partCfg.maxScore})</span>
           <input type="number" min="0" max="${partCfg.maxScore}" data-part-field="score" value="${pData.score ?? ''}" placeholder="Score"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
-        <div class="flex items-center pt-5">
+        <div class="flex items-center pt-4">
           <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
             <input type="checkbox" class="chk" style="--chk-color:#43C6AC" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
-            <span>Mark ${partCfg.name} as Finished</span>
+            <span>Bajarildi</span>
           </label>
         </div>
       </div>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Bugun nechta ${partCfg.name} amaliyotini bajarganingiz (1, 2, 3...) va balingizni kiriting.</p>
     `;
   }
 
   if(moduleId === 'speaking'){
     return `
-      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+      <div class="grid sm:grid-cols-3 gap-4 mb-4">
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Questions Answered</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Bajarilgan Seanslar Soni</span>
+          <input type="number" min="0" data-part-field="count" value="${pData.count ?? ''}" placeholder="Masalan: 1, 2..."
+                 class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
+        </label>
+        <label class="text-xs block">
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Javob berilgan savollar</span>
           <input type="number" min="0" data-part-field="questions" value="${pData.questions ?? ''}" placeholder="0"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Topic / Speech Note</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Mavzu / Qayd</span>
           <input type="text" data-part-field="topic" value="${pData.topic ?? ''}" placeholder="e.g. Favorite Hobby"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm">
         </label>
@@ -1028,14 +1199,14 @@ function renderPartFormInputs(moduleId, partCfg){
     return `
       <div class="grid sm:grid-cols-2 gap-4 mb-4">
         <label class="text-xs block">
-          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Count Completed</span>
+          <span class="block text-ink-900/60 dark:text-paper-100/60 mb-1.5 font-semibold">Bajarilganlar Soni (Articles/Videos)</span>
           <input type="number" min="0" data-part-field="count" value="${pData.count ?? ''}" placeholder="0"
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm font-mono">
         </label>
         <div class="flex items-center pt-5">
           <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
             <input type="checkbox" class="chk" style="--chk-color:#4ECDC4" data-part-field="completed" ${pData.completed ? 'checked' : ''}>
-            <span>Completed</span>
+            <span>Bajarildi</span>
           </label>
         </div>
       </div>
@@ -1282,12 +1453,76 @@ document.querySelectorAll('.period-btn').forEach(btn => {
 --------------------------------------------------------- */
 function applyTheme(){
   document.documentElement.classList.toggle('dark', state.theme === 'dark');
-  document.getElementById('themeIcon').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+  const icon = state.theme === 'dark' ? '🌙' : '☀️';
+  if(document.getElementById('themeIcon')) document.getElementById('themeIcon').textContent = icon;
+  if(document.getElementById('themeIconMobile')) document.getElementById('themeIconMobile').textContent = icon;
 }
-document.getElementById('themeToggle').addEventListener('click', () => {
+function toggleTheme(){
   state.theme = state.theme === 'dark' ? 'light' : 'dark';
   save();
   applyTheme();
+}
+document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile')?.addEventListener('click', toggleTheme);
+
+/* Mobile Drawer Logic */
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenuModal = document.getElementById('mobileMenuModal');
+const closeMobileMenu = document.getElementById('closeMobileMenu');
+const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+
+function openMobileMenu(){ if(mobileMenuModal) mobileMenuModal.classList.remove('hidden'); }
+function hideMobileMenu(){ if(mobileMenuModal) mobileMenuModal.classList.add('hidden'); }
+
+if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+if(closeMobileMenu) closeMobileMenu.addEventListener('click', hideMobileMenu);
+if(mobileMenuBackdrop) mobileMenuBackdrop.addEventListener('click', hideMobileMenu);
+
+document.getElementById('mobilePomodoroBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  document.getElementById('pomodoroModal')?.classList.remove('hidden');
+});
+
+document.getElementById('mobileProfileBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  document.getElementById('profileBtn')?.click();
+});
+
+document.getElementById('mobilePrintBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  window.print();
+});
+
+document.getElementById('mobileExportCsvBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  downloadCSV();
+});
+
+document.getElementById('mobileBackupBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  document.getElementById('backupBtn')?.click();
+});
+
+document.getElementById('mobileImportJson')?.addEventListener('change', e => {
+  hideMobileMenu();
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      state = Object.assign(defaultState(), JSON.parse(ev.target.result));
+      save();
+      renderAll();
+      alert('Import successful');
+    } catch(err) {
+      alert('Invalid JSON file');
+    }
+  };
+  reader.readAsText(f);
+});
+
+document.getElementById('mobileResetDayBtn')?.addEventListener('click', () => {
+  hideMobileMenu();
+  handleReset();
 });
 
 function handleReset(){
