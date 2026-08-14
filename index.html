@@ -192,9 +192,11 @@
     </div>
   </nav>
 
-  <!-- Hero: ring + streak (Visible on Home dashboard) -->
+  <!-- Hero: ring + streak + IELTS Band + Exam Countdown (Visible on Home dashboard) -->
   <section id="heroSection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
-    <div class="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
+    <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+      
+      <!-- Left: Overall Ring Chart -->
       <div class="ring-wrap relative w-36 h-36 sm:w-40 sm:h-40 shrink-0" id="ringWrap" style="--ring-color:#C4F135;">
         <div class="ring-track w-full h-full rounded-full grid place-items-center">
           <div class="w-[76%] h-[76%] rounded-full bg-paper-50 dark:bg-ink-950 grid place-items-center">
@@ -206,20 +208,53 @@
         </div>
       </div>
 
-      <div class="flex-1 w-full">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/15 border border-orange-500/30">
-            <span class="text-lg">🔥</span>
-            <span class="font-mono font-700 text-sm" id="streakCount">0</span>
-            <span class="text-xs text-ink-900/60 dark:text-paper-100/60">day streak</span>
+      <!-- Center & Right: Stats, Band Score & Countdown -->
+      <div class="flex-1 w-full space-y-4">
+        
+        <!-- Top Stats Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/15 border border-orange-500/30">
+              <span class="text-lg">🔥</span>
+              <span class="font-mono font-700 text-sm" id="streakCount">0</span>
+              <span class="text-xs text-ink-900/60 dark:text-paper-100/60">day streak</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-lime-400/10 border border-lime-400/25">
+              <span class="text-xs text-ink-900/70 dark:text-paper-100/70">Best streak:</span>
+              <span class="font-mono font-700 text-sm" id="bestStreak">0</span>
+            </div>
           </div>
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-lime-400/10 border border-lime-400/25">
-            <span class="text-xs text-ink-900/70 dark:text-paper-100/70">Best streak:</span>
-            <span class="font-mono font-700 text-sm" id="bestStreak">0</span>
+
+          <!-- IELTS Overall Band Score Card -->
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-indigo-500/15 border border-indigo-500/30" id="bandScoreBadge">
+            <span class="text-base">🎯</span>
+            <div>
+              <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Estimated Band</div>
+              <div class="font-mono font-700 text-sm text-indigo-400" id="estimatedOverallBand">Band 6.5</div>
+            </div>
+          </div>
+
+          <!-- Exam Countdown Badge -->
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-rose-500/15 border border-rose-500/30" id="examCountdownBadge">
+            <span class="text-base">⏳</span>
+            <div>
+              <div class="text-[10px] text-rose-400 font-bold uppercase tracking-wider">Exam Countdown</div>
+              <div class="font-mono font-700 text-sm text-rose-400" id="examDaysLeft">Set date in Profile</div>
+            </div>
           </div>
         </div>
-        <p class="text-sm text-ink-900/60 dark:text-paper-100/60 mb-3">Daily target status — complete parts across modules to reach 100%.</p>
+
+        <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Daily target status — complete parts across modules to reach 100%.</p>
         <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="miniTargets"></div>
+
+        <!-- Badges & Achievements Row -->
+        <div class="pt-3 border-t border-black/10 dark:border-white/10">
+          <div class="text-[10px] font-bold uppercase tracking-wider text-ink-900/40 dark:text-paper-100/40 mb-2">Unlocked Badges & Achievements</div>
+          <div class="flex flex-wrap gap-2" id="achievementsList">
+            <!-- Dynamic Badges -->
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -232,11 +267,19 @@
 
   <!-- Vocabulary tracker -->
   <section id="vocabSection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6 module-card" style="--accent:#FF6FA8;">
-    <div class="flex items-center justify-between mb-1">
-      <h2 class="font-display font-700 text-lg flex items-center gap-2">📚 4000 Essential Words — Vocabulary Tracker</h2>
-      <div class="text-right">
-        <div class="font-mono font-700 text-xl" id="vocabOverallPct">0%</div>
-        <div class="text-[10px] uppercase tracking-wider text-ink-900/50 dark:text-paper-100/50">mastery</div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div>
+        <h2 class="font-display font-700 text-lg flex items-center gap-2">📚 4000 Essential Words — Vocabulary Tracker</h2>
+        <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Master 4 Books of high-frequency IELTS vocabulary.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="openFlashcardsBtn" class="px-3.5 py-2 rounded-xl bg-pink-500 text-white font-bold text-xs hover:brightness-110 transition shadow-md flex items-center gap-1.5">
+          <span>🎴</span> Start Flashcards Mode
+        </button>
+        <div class="text-right">
+          <div class="font-mono font-700 text-xl" id="vocabOverallPct">0%</div>
+          <div class="text-[10px] uppercase tracking-wider text-ink-900/50 dark:text-paper-100/50">mastery</div>
+        </div>
       </div>
     </div>
     <div class="w-full h-2 rounded-full bg-ink-900/10 dark:bg-paper-100/10 overflow-hidden mb-5">
@@ -285,41 +328,111 @@
 
   <!-- Profile modal -->
   <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-    <div class="w-full max-w-md p-6 bg-paper-50 dark:bg-ink-950 rounded-2xl">
-      <h3 class="font-700 mb-3">Profile & Targets</h3>
-      <label class="block text-sm mb-2">Weekly reading target (passages)
-        <input id="profileReadingTarget" type="number" min="0" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8">
-      </label>
-      <label class="block text-sm mb-2">Weekly listening target (tests)
-        <input id="profileListeningTarget" type="number" min="0" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8">
-      </label>
-      <div class="flex justify-end gap-2 mt-4">
-        <button id="closeProfile" class="px-3 py-2 rounded-lg bg-black/5">Close</button>
-        <button id="saveProfile" class="px-3 py-2 rounded-lg bg-lime-400 text-ink-950">Save</button>
+    <div class="w-full max-w-md p-6 bg-paper-50 dark:bg-ink-950 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-black/10 dark:border-white/10">
+        <h3 class="font-display font-700 text-base flex items-center gap-2">👤 Profile & Targets</h3>
+        <button id="closeProfileX" class="text-sm font-bold opacity-60 hover:opacity-100">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <label class="block text-xs font-semibold">Weekly Reading Target (passages)
+          <input id="profileReadingTarget" type="number" min="0" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm">
+        </label>
+
+        <label class="block text-xs font-semibold">Weekly Listening Target (tests)
+          <input id="profileListeningTarget" type="number" min="0" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm">
+        </label>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <label class="block text-xs font-semibold">Target Writing Band
+            <input id="profileWritingBand" type="number" step="0.5" min="4" max="9" placeholder="6.5" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm font-mono">
+          </label>
+          <label class="block text-xs font-semibold">Target Speaking Band
+            <input id="profileSpeakingBand" type="number" step="0.5" min="4" max="9" placeholder="6.5" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm font-mono">
+          </label>
+        </div>
+
+        <label class="block text-xs font-semibold pt-2">🎯 Target IELTS Exam Date
+          <input id="profileExamDate" type="date" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm">
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-5 pt-3 border-t border-black/10 dark:border-white/10">
+        <button id="closeProfile" class="px-3.5 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold">Close</button>
+        <button id="saveProfile" class="px-4 py-2 rounded-xl bg-lime-400 text-ink-950 text-xs font-bold shadow-md">Save Settings</button>
       </div>
     </div>
   </div>
 
   <!-- Pomodoro modal -->
   <div id="pomodoroModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
-    <div class="w-full max-w-sm p-6 bg-paper-50 dark:bg-ink-950 rounded-2xl">
-      <h3 class="font-700 mb-3">Pomodoro Timer</h3>
+    <div class="w-full max-w-sm p-6 bg-paper-50 dark:bg-ink-950 rounded-2xl shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-display font-700 text-base">⏱️ Pomodoro & Focus Timer</h3>
+        <button id="closePomX" class="text-sm font-bold opacity-60 hover:opacity-100">✕</button>
+      </div>
+
       <div class="flex items-center gap-2 mb-3">
-        <label class="flex-1 text-sm">Work (min)
-          <input id="pomWork" type="number" min="1" value="25" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5">
+        <label class="flex-1 text-xs font-semibold">Work (min)
+          <input id="pomWork" type="number" min="1" value="25" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm font-mono">
         </label>
-        <label class="flex-1 text-sm">Break (min)
-          <input id="pomBreak" type="number" min="1" value="5" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5">
+        <label class="flex-1 text-xs font-semibold">Break (min)
+          <input id="pomBreak" type="number" min="1" value="5" class="w-full mt-1 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/8 text-sm font-mono">
         </label>
       </div>
-      <div class="text-center font-mono text-3xl mb-3" id="pomDisplay">25:00</div>
-      <div class="flex justify-between gap-2">
-        <button id="pomStart" class="flex-1 px-3 py-2 rounded-lg bg-lime-400">Start</button>
-        <button id="pomPause" class="flex-1 px-3 py-2 rounded-lg bg-black/5">Pause</button>
-        <button id="pomReset" class="flex-1 px-3 py-2 rounded-lg bg-black/5">Reset</button>
+
+      <div class="text-center font-mono text-4xl font-bold my-4 text-lime-400" id="pomDisplay">25:00</div>
+
+      <div class="flex justify-between gap-2 mb-4">
+        <button id="pomStart" class="flex-1 px-3 py-2 rounded-xl bg-lime-400 text-ink-950 font-bold text-xs shadow-md">Start</button>
+        <button id="pomPause" class="flex-1 px-3 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold">Pause</button>
+        <button id="pomReset" class="flex-1 px-3 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-xs font-semibold">Reset</button>
       </div>
+
+      <!-- Focus Ambient Sounds -->
+      <div class="pt-3 border-t border-black/10 dark:border-white/10">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-ink-900/40 dark:text-paper-100/40 mb-2">Focus Ambient Sounds</div>
+        <div class="grid grid-cols-3 gap-1.5" id="ambientSoundBtns">
+          <button data-ambient="rain" class="px-2 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-lime-400/20 text-[11px] font-semibold transition text-center">🌧️ Rain</button>
+          <button data-ambient="ocean" class="px-2 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-lime-400/20 text-[11px] font-semibold transition text-center">🌊 Ocean</button>
+          <button data-ambient="cafe" class="px-2 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-lime-400/20 text-[11px] font-semibold transition text-center">☕ Cafe</button>
+        </div>
+      </div>
+
       <div class="flex justify-end mt-4">
-        <button id="closePom" class="px-3 py-2 rounded-lg bg-black/5">Close</button>
+        <button id="closePom" class="px-3.5 py-1.5 rounded-lg bg-black/5 dark:bg-white/10 text-xs">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flashcards Mode Modal -->
+  <div id="flashcardsModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="w-full max-w-md p-6 bg-paper-50 dark:bg-ink-950 rounded-3xl shadow-2xl border border-black/10 dark:border-white/10">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-black/10 dark:border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎴</span>
+          <h3 class="font-display font-700 text-base">Vocab Flashcards</h3>
+        </div>
+        <button id="closeFlashcardsBtn" class="text-sm font-bold opacity-60 hover:opacity-100">✕</button>
+      </div>
+
+      <!-- Flashcard Display Box -->
+      <div id="flashcardBox" class="relative w-full h-56 rounded-2xl glass border border-pink-500/30 p-6 flex flex-col items-center justify-center text-center cursor-pointer select-none transition transform hover:scale-[1.01] shadow-xl">
+        <div class="text-xs font-mono font-bold text-pink-400 uppercase tracking-widest mb-1" id="fcBookLabel">BOOK 1 • UNIT 1</div>
+        <div class="font-display font-700 text-3xl mb-2 text-ink-900 dark:text-paper-100" id="fcWordTitle">Aberration</div>
+        <div class="text-xs text-ink-900/50 dark:text-paper-100/50 italic mb-3" id="fcPos">(noun)</div>
+        <div class="text-xs text-pink-500 font-medium hidden" id="fcDefinition">A departure from what is normal, usual, or expected.</div>
+        <div class="text-[11px] text-ink-900/40 dark:text-paper-100/40 italic mt-2 hidden" id="fcExample">"The cold wave was a winter aberration."</div>
+        <div class="text-[10px] font-bold text-ink-900/30 dark:text-paper-100/30 uppercase tracking-wider mt-4" id="fcFlipHint">Tap card to flip definition ↺</div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3 mt-5">
+        <button id="fcReviewBtn" class="flex-1 py-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 font-bold text-xs hover:bg-rose-500/25 transition">
+          ↺ Review Later
+        </button>
+        <button id="fcMasteredBtn" class="flex-1 py-2.5 rounded-xl bg-lime-400 text-ink-950 font-bold text-xs hover:brightness-110 transition shadow-md">
+          ✓ Mastered!
+        </button>
       </div>
     </div>
   </div>
@@ -553,17 +666,15 @@ function blankPartState(){
 }
 
 function defaultListeningPlan(){
-  return {
-    weeks: [
-      { day:'Monday', task:'Listening to podcasts 30 mins', score:'', done:false },
-      { day:'Tuesday', task:'Blind listening 1.2x 1.5x 1, uz 2x', score:'', done:false },
-      { day:'Wednesday', task:'Film 2 hours', score:'', done:false },
-      { day:'Thursday', task:'Write podcast 6 min BBC', score:'', done:false },
-      { day:'Friday', task:'Radio UK 1 hour', score:'', done:false },
-      { day:'Saturday', task:'Watch full test script on YouTube', score:'', done:false },
-      { day:'Sunday', task:'Meditation listening + full test', score:'', done:false },
-    ]
-  };
+  return [
+    { day: 'MONDAY', icon: '🎧', color: '#9B51E0', task: 'Listening to Podcasts 30 mins', score: '', done: false },
+    { day: 'TUESDAY', icon: '👂', color: '#27AE60', task: 'Blind listening 1,2x 1,5x 1,uz 2x', score: '', done: false },
+    { day: 'WEDNESDAY', icon: '🎬', color: '#D97706', task: 'Film 2 hours', score: '', done: false },
+    { day: 'THURSDAY', icon: '✏️', color: '#E11D48', task: 'Write Podcast 6 min bbc', score: '', done: false },
+    { day: 'FRIDAY', icon: '📻', color: '#2563EB', task: 'Radio UK 1 hour', score: '', done: false },
+    { day: 'SATURDAY', icon: '💻', color: '#0D9488', task: 'Watch full test Script on Utube', score: '', done: false },
+    { day: 'SUNDAY', icon: '🧘', color: '#7C3AED', task: 'Meditation listening full test', score: '', done: false },
+  ];
 }
 
 function defaultState(){
@@ -637,10 +748,19 @@ function load(){
       }
     }
 
+    let listeningPlan = defaultListeningPlan();
+    if (parsed.listeningPlan) {
+      if (Array.isArray(parsed.listeningPlan)) {
+        listeningPlan = defaultListeningPlan().map((item, idx) => Object.assign({}, item, parsed.listeningPlan[idx] || {}));
+      } else if (parsed.listeningPlan.weeks && Array.isArray(parsed.listeningPlan.weeks)) {
+        listeningPlan = defaultListeningPlan().map((item, idx) => Object.assign({}, item, parsed.listeningPlan.weeks[idx] || {}));
+      }
+    }
+
     return Object.assign(def, parsed, {
       today: today,
       vocab: Object.assign(def.vocab, parsed.vocab || {}),
-      listeningPlan: parsed.listeningPlan || defaultListeningPlan(),
+      listeningPlan: listeningPlan,
     });
   }catch(e){
     console.error('Could not read saved data, starting fresh.', e);
@@ -939,6 +1059,87 @@ function updateFocusedRouteProgress(moduleId, activePartId){
   });
 }
 
+function updateWeeklyListeningProgress(){
+  const container = document.getElementById('focusedRouteSection');
+  if(!container) return;
+  const plan = state.listeningPlan || [];
+  const completedDays = plan.filter(d => d.done || (d.score !== '' && !isNaN(Number(d.score)))).length;
+  const pct = Math.round((completedDays / 7) * 100);
+
+  const countBadge = container.querySelector('.weekly-listening-count-badge');
+  if(countBadge) countBadge.textContent = `${completedDays}/7 days`;
+
+  const pctText = container.querySelector('.weekly-listening-pct-text');
+  if(pctText) pctText.textContent = `${pct}%`;
+
+  const barFill = container.querySelector('.weekly-listening-bar-fill');
+  if(barFill) barFill.style.width = `${pct}%`;
+}
+
+function renderWeeklyListeningSchedule(){
+  const plan = state.listeningPlan || defaultListeningPlan();
+  const completedDays = plan.filter(d => d.done || (d.score !== '' && !isNaN(Number(d.score)))).length;
+  const pct = Math.round((completedDays / 7) * 100);
+
+  return `
+    <div class="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <div>
+          <h3 class="font-display font-700 text-lg flex items-center gap-2">
+            <span>🗓️ 1-Week Listening Exercise Schedule</span>
+            <span class="weekly-listening-count-badge text-xs px-2.5 py-0.5 rounded-full bg-lime-400/20 text-lime-500 font-mono font-bold">${completedDays}/7 days</span>
+          </h3>
+          <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Weekly systematic exercise plan for IELTS Listening mastery.</p>
+        </div>
+        <div class="w-full sm:w-48">
+          <div class="flex justify-between text-[11px] font-bold mb-1">
+            <span>Weekly Progress</span>
+            <span class="weekly-listening-pct-text font-mono text-lime-500">${pct}%</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+            <div class="weekly-listening-bar-fill h-full rounded-full bg-lime-400 bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        ${plan.map((item, index) => {
+          const isDone = item.done || (item.score !== '' && !isNaN(Number(item.score)));
+          return `
+            <div class="rounded-2xl p-3.5 sm:p-4 border transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${isDone ? 'bg-lime-400/10 border-lime-400/40' : 'bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10'}" style="border-left: 5px solid ${item.color || '#43C6AC'}">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl grid place-items-center text-xl shrink-0" style="background:${item.color}22; color:${item.color}">
+                  ${item.icon}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-display font-700 text-xs tracking-wider uppercase" style="color:${item.color}">${item.day}</span>
+                    ${isDone ? '<span class="text-[10px] px-2 py-0.2 rounded-full bg-lime-400 text-ink-950 font-bold">✓ DONE</span>' : ''}
+                  </div>
+                  <div class="font-semibold text-sm sm:text-base leading-snug">${item.task}</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 self-end sm:self-center">
+                <div class="flex items-center gap-1.5 bg-paper-50 dark:bg-ink-950 px-3 py-1.5 rounded-xl border border-black/10 dark:border-white/10">
+                  <span class="text-xs font-bold text-rose-500 whitespace-nowrap">+ Full test</span>
+                  <input type="number" min="0" max="40" data-listening-plan-score="${index}" value="${item.score ?? ''}" placeholder="score"
+                         class="w-14 bg-transparent border-b border-black/20 dark:border-white/20 px-1 py-0.5 text-center text-sm font-mono font-bold outline-none">
+                  <span class="text-xs text-ink-900/40 dark:text-paper-100/40 font-mono">/ 40</span>
+                </div>
+                
+                <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer select-none" title="Mark exercise done">
+                  <input type="checkbox" class="chk text-sm" style="--chk-color:${item.color || '#43C6AC'}" data-listening-plan-done="${index}" ${item.done ? 'checked' : ''}>
+                </label>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
 function renderFocusedRouteView(moduleId, activePartId){
   const mCfg = MODULE_CONFIG[moduleId];
   if(!mCfg) return;
@@ -1082,6 +1283,9 @@ function renderFocusedRouteView(moduleId, activePartId){
         </div>
       </div>
 
+      <!-- 1-WEEK LISTENING EXERCISE SCHEDULE (IF LISTENING MODULE) -->
+      ${moduleId === 'listening' ? renderWeeklyListeningSchedule() : ''}
+
     </div>
   `;
 
@@ -1101,6 +1305,83 @@ function renderFocusedRouteView(moduleId, activePartId){
       updateFocusedRouteProgress(moduleId, activePartId);
     });
   });
+
+  if(moduleId === 'listening'){
+    container.querySelectorAll('[data-listening-plan-score]').forEach(input => {
+      input.addEventListener('input', e => {
+        const idx = Number(e.target.dataset.listeningPlanScore);
+        if(state.listeningPlan && state.listeningPlan[idx]){
+          state.listeningPlan[idx].score = e.target.value;
+          if(e.target.value !== '' && !isNaN(Number(e.target.value))) {
+            state.listeningPlan[idx].done = true;
+            const chk = container.querySelector(`[data-listening-plan-done="${idx}"]`);
+            if(chk) chk.checked = true;
+          }
+          save();
+          renderHero();
+          updateWeeklyListeningProgress();
+        }
+      });
+    });
+
+    container.querySelectorAll('[data-listening-plan-done]').forEach(chk => {
+      chk.addEventListener('change', e => {
+        const idx = Number(e.target.dataset.listeningPlanDone);
+        if(state.listeningPlan && state.listeningPlan[idx]){
+          state.listeningPlan[idx].done = e.target.checked;
+          save();
+          renderHero();
+          updateWeeklyListeningProgress();
+        }
+      });
+    });
+  }
+
+  if(moduleId === 'writing'){
+    const essayTextarea = container.querySelector('#liveEssayText');
+    if(essayTextarea){
+      const updateWordBadge = () => {
+        const text = essayTextarea.value || '';
+        const words = text.trim() ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+        const badge = container.querySelector('#liveEssayWordBadge');
+        if(badge) badge.textContent = `${words} words`;
+        
+        const wordCountInput = container.querySelector('[data-part-field="wordCount"]');
+        if(wordCountInput) wordCountInput.value = words;
+
+        if(!state.today.writing.parts[activePartId]) state.today.writing.parts[activePartId] = {};
+        state.today.writing.parts[activePartId].wordCount = words;
+        state.today.writing.parts[activePartId].essayText = text;
+        save();
+        renderHero();
+        updateFocusedRouteProgress('writing', activePartId);
+      };
+      essayTextarea.addEventListener('input', updateWordBadge);
+      updateWordBadge();
+    }
+  }
+
+  if(moduleId === 'speaking'){
+    const cueCardBtn = container.querySelector('#generateCueCardBtn');
+    if(cueCardBtn){
+      const cueTopicEl = container.querySelector('#cueCardTopic');
+      const cueBulletsEl = container.querySelector('#cueCardBullets');
+
+      cueCardBtn.addEventListener('click', () => {
+        const card = SPEAKING_CUE_CARDS[Math.floor(Math.random() * SPEAKING_CUE_CARDS.length)];
+        if(cueTopicEl) cueTopicEl.textContent = card.topic;
+        if(cueBulletsEl) cueBulletsEl.innerHTML = card.bullets.join('<br>');
+      });
+
+      container.querySelector('#cuePrepTimerBtn')?.addEventListener('click', () => {
+        startCueTimer(60, '1-Min Prep');
+      });
+
+      container.querySelector('#cueSpeechTimerBtn')?.addEventListener('click', () => {
+        startCueTimer(120, '2-Min Speech');
+      });
+    }
+  }
 }
 
 /* Form renderer per module/part */
@@ -1145,7 +1426,17 @@ function renderPartFormInputs(moduleId, partCfg){
           </label>
         </div>
       </div>
-      <p class="text-xs text-ink-900/50 dark:text-paper-100/50">Maqsad: ${partCfg.targetWords} so'z yoki 1+ insho yozish.</p>
+      <p class="text-xs text-ink-900/50 dark:text-paper-100/50 mb-3">Maqsad: ${partCfg.targetWords} so'z yoki 1+ insho yozish.</p>
+
+      <!-- Live Essay Writing Practice Box -->
+      <div class="mt-4 pt-4 border-t border-black/10 dark:border-white/10">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-purple-400">✍️ Live Essay Writing Practice</span>
+          <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300" id="liveEssayWordBadge">0 words</span>
+        </div>
+        <textarea id="liveEssayText" placeholder="Type or paste your essay draft here to measure word count live..." rows="5"
+                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl p-3 text-sm font-mono outline-none focus:border-purple-400">${pData.essayText || ''}</textarea>
+      </div>
     `;
   }
 
@@ -1192,6 +1483,27 @@ function renderPartFormInputs(moduleId, partCfg){
                  class="w-full bg-paper-50 dark:bg-ink-950 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-sm">
         </label>
       </div>
+
+      <!-- Speaking Cue Card Generator -->
+      <div class="mt-4 pt-4 border-t border-black/10 dark:border-white/10">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-orange-400 flex items-center gap-1">🎙️ IELTS Speaking Cue Card Generator</span>
+          <button id="generateCueCardBtn" type="button" class="px-2.5 py-1 rounded-xl bg-orange-500/20 text-orange-400 font-bold text-[11px] hover:bg-orange-500/30 transition">
+            🎲 Random Topic
+          </button>
+        </div>
+        <div id="cueCardBox" class="rounded-xl p-3 bg-orange-500/10 border border-orange-500/25">
+          <div id="cueCardTopic" class="font-display font-700 text-xs text-orange-400 mb-1">Describe a book you recently read and enjoyed</div>
+          <div id="cueCardBullets" class="text-[11px] text-ink-900/60 dark:text-paper-100/60 space-y-0.5 mb-2">
+            • What book it was<br>• Who wrote it<br>• What the plot was<br>• And explain why you liked it
+          </div>
+          <div class="flex items-center gap-2 pt-1 border-t border-orange-500/20">
+            <button id="cuePrepTimerBtn" type="button" class="px-2 py-1 rounded-lg bg-black/10 dark:bg-white/10 text-[10px] font-bold text-orange-400">⏱️ 1-Min Prep</button>
+            <button id="cueSpeechTimerBtn" type="button" class="px-2 py-1 rounded-lg bg-lime-400 text-ink-950 text-[10px] font-bold">🎙️ 2-Min Speech</button>
+            <span id="cueTimerDisplay" class="font-mono text-xs font-bold ml-auto text-orange-400"></span>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -1217,6 +1529,81 @@ function renderPartFormInputs(moduleId, partCfg){
 }
 
 /* ---------------------------------------------------------
+   IELTS BAND CALCULATOR & ACHIEVEMENTS HELPERS
+--------------------------------------------------------- */
+function scoreToReadingBand(score){
+  const s = Number(score);
+  if(isNaN(s) || score === '' || s <= 0) return 0;
+  if(s >= 39) return 9.0;
+  if(s >= 37) return 8.5;
+  if(s >= 35) return 8.0;
+  if(s >= 33) return 7.5;
+  if(s >= 30) return 7.0;
+  if(s >= 27) return 6.5;
+  if(s >= 23) return 6.0;
+  if(s >= 19) return 5.5;
+  if(s >= 15) return 5.0;
+  if(s >= 13) return 4.5;
+  if(s >= 10) return 4.0;
+  return 3.5;
+}
+
+function scoreToListeningBand(score){
+  const s = Number(score);
+  if(isNaN(s) || score === '' || s <= 0) return 0;
+  if(s >= 39) return 9.0;
+  if(s >= 37) return 8.5;
+  if(s >= 35) return 8.0;
+  if(s >= 32) return 7.5;
+  if(s >= 30) return 7.0;
+  if(s >= 26) return 6.5;
+  if(s >= 23) return 6.0;
+  if(s >= 18) return 5.5;
+  if(s >= 16) return 5.0;
+  if(s >= 13) return 4.5;
+  if(s >= 10) return 4.0;
+  return 3.5;
+}
+
+function computeEstimatedOverallBand(){
+  const rScore = state.today.reading?.parts?.full?.score || state.today.reading?.parts?.part1?.score || '';
+  const lScore = state.today.listening?.parts?.full?.score || state.today.listening?.parts?.part1?.score || '';
+  
+  const rBand = scoreToReadingBand(rScore) || (Number(state.profile?.readingTargetBand) || 6.5);
+  const lBand = scoreToListeningBand(lScore) || (Number(state.profile?.listeningTargetBand) || 6.5);
+  const wBand = Number(state.profile?.writingBand) || 6.5;
+  const sBand = Number(state.profile?.speakingBand) || 6.5;
+
+  const avg = (rBand + lBand + wBand + sBand) / 4;
+  const rem = avg % 1;
+  let finalBand = Math.floor(avg);
+  if(rem >= 0.75) finalBand += 1.0;
+  else if(rem >= 0.25) finalBand += 0.5;
+
+  return finalBand.toFixed(1);
+}
+
+function computeAchievements(){
+  const badges = [];
+  const pct = computeOverallPct();
+  const streak = state.streak || 0;
+  const vocabDone = Object.values(state.vocab || {}).reduce((acc, b) => acc + (b.completed || 0), 0);
+  const listeningDoneDays = (state.listeningPlan || []).filter(d => d.done || (d.score !== '' && !isNaN(Number(d.score)))).length;
+
+  if (streak >= 7) badges.push({ icon: '🔥', title: '7-Day Warrior', desc: '7+ Days Streak' });
+  if (vocabDone >= 5) badges.push({ icon: '📚', title: 'Vocab Ninja', desc: `${vocabDone} Units Memorized` });
+  if (listeningDoneDays >= 3) badges.push({ icon: '🎧', title: 'Listening Hero', desc: `${listeningDoneDays}/7 Plan Days` });
+  if (pct >= 100) badges.push({ icon: '🎯', title: 'Target Achiever', desc: '100% Daily Target' });
+  if (state.history && state.history.length >= 3) badges.push({ icon: '⚡', title: 'Consistent Learner', desc: '3+ Days Logged' });
+
+  if (badges.length === 0) {
+    badges.push({ icon: '🌱', title: 'First Step', desc: 'Start your study goals today!' });
+  }
+
+  return badges;
+}
+
+/* ---------------------------------------------------------
    RENDER: HERO / DASHBOARD
 --------------------------------------------------------- */
 function renderHero(){
@@ -1228,6 +1615,26 @@ function renderHero(){
   document.getElementById('streakCount').textContent = state.streak;
   document.getElementById('bestStreak').textContent = state.bestStreak;
 
+  // Estimated Band
+  const estBand = computeEstimatedOverallBand();
+  const bandEl = document.getElementById('estimatedOverallBand');
+  if(bandEl) bandEl.textContent = `Band ${estBand}`;
+
+  // Exam Countdown
+  const countdownEl = document.getElementById('examDaysLeft');
+  if(countdownEl) {
+    if(state.profile && state.profile.examDate) {
+      const diffTime = new Date(state.profile.examDate + 'T00:00:00') - new Date();
+      const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if(days > 0) countdownEl.textContent = `${days} days left`;
+      else if(days === 0) countdownEl.textContent = `EXAM TODAY! 🔥`;
+      else countdownEl.textContent = `Passed (${Math.abs(days)}d ago)`;
+    } else {
+      countdownEl.textContent = 'Set date in Profile';
+    }
+  }
+
+  // Mini Target Badges
   const mini = document.getElementById('miniTargets');
   mini.innerHTML = Object.values(MODULE_CONFIG).map(m => {
     const p = moduleProgress(m.id);
@@ -1237,6 +1644,18 @@ function renderHero(){
       <div class="text-[10px] font-semibold mt-0.5 truncate">${m.name}</div>
     </a>`;
   }).join('');
+
+  // Achievements & Badges List
+  const achievementsContainer = document.getElementById('achievementsList');
+  if(achievementsContainer) {
+    const badges = computeAchievements();
+    achievementsContainer.innerHTML = badges.map(b => `
+      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10" title="${b.desc}">
+        <span class="text-sm">${b.icon}</span>
+        <span class="text-xs font-bold text-ink-900/80 dark:text-paper-100/80">${b.title}</span>
+      </div>
+    `).join('');
+  }
 }
 
 /* ---------------------------------------------------------
@@ -1586,12 +2005,205 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   const p = state.profile || {};
   document.getElementById('profileReadingTarget').value = p.readingTarget || 0;
   document.getElementById('profileListeningTarget').value = p.listeningTarget || 0;
+  document.getElementById('profileWritingBand').value = p.writingBand || 6.5;
+  document.getElementById('profileSpeakingBand').value = p.speakingBand || 6.5;
+  document.getElementById('profileExamDate').value = p.examDate || '';
 });
-document.getElementById('closeProfile').addEventListener('click', () => document.getElementById('profileModal').classList.add('hidden'));
+
+const closeProfileModal = () => document.getElementById('profileModal').classList.add('hidden');
+document.getElementById('closeProfile')?.addEventListener('click', closeProfileModal);
+document.getElementById('closeProfileX')?.addEventListener('click', closeProfileModal);
+
 document.getElementById('saveProfile').addEventListener('click', () => {
-  state.profile = { readingTarget: Number(document.getElementById('profileReadingTarget').value)||0, listeningTarget: Number(document.getElementById('profileListeningTarget').value)||0 };
-  save(); document.getElementById('profileModal').classList.add('hidden');
+  state.profile = {
+    readingTarget: Number(document.getElementById('profileReadingTarget').value)||0,
+    listeningTarget: Number(document.getElementById('profileListeningTarget').value)||0,
+    writingBand: Number(document.getElementById('profileWritingBand').value)||6.5,
+    speakingBand: Number(document.getElementById('profileSpeakingBand').value)||6.5,
+    examDate: document.getElementById('profileExamDate').value || ''
+  };
+  save();
+  renderHero();
+  closeProfileModal();
 });
+
+/* Focus Ambient Sounds Synthesizer */
+let audioCtx = null, ambientOsc = null, ambientGain = null, currentAmbientType = null;
+
+function toggleAmbientSound(type){
+  if(currentAmbientType === type && audioCtx) { stopAmbientSound(); return; }
+  stopAmbientSound();
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const bufferSize = audioCtx.sampleRate * 2;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1) * (type === 'rain' ? 0.12 : (type === 'ocean' ? 0.08 : 0.05));
+    }
+    const whiteNoise = audioCtx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    whiteNoise.loop = true;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = type === 'rain' ? 'lowpass' : (type === 'ocean' ? 'bandpass' : 'lowpass');
+    filter.frequency.value = type === 'rain' ? 700 : (type === 'ocean' ? 350 : 1000);
+
+    ambientGain = audioCtx.createGain();
+    ambientGain.gain.value = 0.15;
+
+    whiteNoise.connect(filter);
+    filter.connect(ambientGain);
+    ambientGain.connect(audioCtx.destination);
+    whiteNoise.start();
+    ambientOsc = whiteNoise;
+    currentAmbientType = type;
+  } catch(e) { console.log('Audio not supported', e); }
+}
+
+function stopAmbientSound(){
+  if(ambientOsc) { try { ambientOsc.stop(); } catch(e){} ambientOsc = null; }
+  if(audioCtx) { try { audioCtx.close(); } catch(e){} audioCtx = null; }
+  currentAmbientType = null;
+}
+
+document.querySelectorAll('[data-ambient]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const type = e.currentTarget.dataset.ambient;
+    if(currentAmbientType === type) {
+      stopAmbientSound();
+      e.currentTarget.classList.remove('bg-lime-400', 'text-ink-950');
+      e.currentTarget.classList.add('bg-black/5', 'dark:bg-white/5');
+    } else {
+      document.querySelectorAll('[data-ambient]').forEach(b => {
+        b.classList.remove('bg-lime-400', 'text-ink-950');
+        b.classList.add('bg-black/5', 'dark:bg-white/5');
+      });
+      toggleAmbientSound(type);
+      e.currentTarget.classList.remove('bg-black/5', 'dark:bg-white/5');
+      e.currentTarget.classList.add('bg-lime-400', 'text-ink-950');
+    }
+  });
+});
+
+/* Flashcards Mode */
+const FLASHCARD_WORDS = [
+  { book: 'BOOK 1', unit: 'UNIT 1', word: 'Aberration', pos: '(noun)', def: 'A departure from what is normal or expected.', ex: '"The cold wave was a winter aberration."', uz: 'Noma\'lumlik, odatiy holatdan og\'ish' },
+  { book: 'BOOK 1', unit: 'UNIT 2', word: 'Benevolent', pos: '(adj)', def: 'Well meaning and kindly.', ex: '"A benevolent smile lit up her face."', uz: 'Xayrixoh, mehribon' },
+  { book: 'BOOK 2', unit: 'UNIT 3', word: 'Capacious', pos: '(adj)', def: 'Having a lot of space inside; roomy.', ex: '"She carried a capacious leather handbag."', uz: 'Keng, sig\'imli' },
+  { book: 'BOOK 2', unit: 'UNIT 4', word: 'Diligent', pos: '(adj)', def: 'Having or showing care and conscientiousness in work.', ex: '"He is a diligent student."', uz: 'G\'ayratli, tirishqoq' },
+  { book: 'BOOK 3', unit: 'UNIT 5', word: 'Ephemeral', pos: '(adj)', def: 'Lasting for a very short time.', ex: '"Fame in the digital age is ephemeral."', uz: 'O\'tkinchi, qisqa muddatli' },
+  { book: 'BOOK 3', unit: 'UNIT 6', word: 'Fastidious', pos: '(adj)', def: 'Very attentive to and concerned about accuracy and detail.', ex: '"He was fastidious about his appearance."', uz: 'Meticulous, o\'ta sinchkov' },
+  { book: 'BOOK 4', unit: 'UNIT 7', word: 'Garrulous', pos: '(adj)', def: 'Excessively talkative, especially on trivial matters.', ex: '"A garrulous cab driver kept us entertained."', uz: 'Sergap, ezma' },
+  { book: 'BOOK 4', unit: 'UNIT 8', word: 'Meticulous', pos: '(adj)', def: 'Showing great attention to detail; very careful and precise.', ex: '"He had prepared a meticulous plan."', uz: 'O\'ta ehtiyotkor, tartibli' }
+];
+
+let fcCurrentIndex = 0, fcFlipped = false;
+
+function renderFlashcard(){
+  const fc = FLASHCARD_WORDS[fcCurrentIndex % FLASHCARD_WORDS.length];
+  document.getElementById('fcBookLabel').textContent = `${fc.book} • ${fc.unit}`;
+  document.getElementById('fcWordTitle').textContent = fc.word;
+  document.getElementById('fcPos').textContent = fc.pos;
+  document.getElementById('fcDefinition').textContent = `${fc.def} (O'zbekcha: ${fc.uz})`;
+  document.getElementById('fcExample').textContent = fc.ex;
+
+  fcFlipped = false;
+  document.getElementById('fcDefinition').classList.add('hidden');
+  document.getElementById('fcExample').classList.add('hidden');
+  document.getElementById('fcFlipHint').textContent = 'Tap card to flip definition ↺';
+}
+
+const openFlashcardsBtn = document.getElementById('openFlashcardsBtn');
+const flashcardsModal = document.getElementById('flashcardsModal');
+const closeFlashcardsBtn = document.getElementById('closeFlashcardsBtn');
+const flashcardBox = document.getElementById('flashcardBox');
+
+if(openFlashcardsBtn) {
+  openFlashcardsBtn.addEventListener('click', () => {
+    flashcardsModal.classList.remove('hidden');
+    fcCurrentIndex = 0;
+    renderFlashcard();
+  });
+}
+if(closeFlashcardsBtn) {
+  closeFlashcardsBtn.addEventListener('click', () => flashcardsModal.classList.add('hidden'));
+}
+if(flashcardBox) {
+  flashcardBox.addEventListener('click', () => {
+    fcFlipped = !fcFlipped;
+    if(fcFlipped) {
+      document.getElementById('fcDefinition').classList.remove('hidden');
+      document.getElementById('fcExample').classList.remove('hidden');
+      document.getElementById('fcFlipHint').textContent = 'Tap to flip back ↺';
+    } else {
+      document.getElementById('fcDefinition').classList.add('hidden');
+      document.getElementById('fcExample').classList.add('hidden');
+      document.getElementById('fcFlipHint').textContent = 'Tap card to flip definition ↺';
+    }
+  });
+}
+
+document.getElementById('fcMasteredBtn')?.addEventListener('click', () => {
+  fcCurrentIndex++;
+  if(state.vocab && state.vocab.book1) {
+    state.vocab.book1.completed = Math.min(UNITS_PER_BOOK, state.vocab.book1.completed + 1);
+    save();
+    renderVocab();
+    renderHero();
+  }
+  renderFlashcard();
+});
+document.getElementById('fcReviewBtn')?.addEventListener('click', () => {
+  fcCurrentIndex++;
+  renderFlashcard();
+});
+
+/* Speaking Cue Cards & Timer */
+const SPEAKING_CUE_CARDS = [
+  {
+    topic: "Describe a decision you made that changed your life",
+    bullets: ["• What the decision was", "• When and where you made it", "• Who influenced your choice", "• And explain why it was life-changing"]
+  },
+  {
+    topic: "Describe a book you recently read and enjoyed",
+    bullets: ["• What book it was", "• Who wrote it", "• What the plot was", "• And explain why you found it interesting"]
+  },
+  {
+    topic: "Describe a place you visited that impressed you a lot",
+    bullets: ["• Where this place is located", "• When you visited it", "• What you did there", "• And explain why it impressed you so much"]
+  },
+  {
+    topic: "Describe a person who inspires you to achieve your goals",
+    bullets: ["• Who this person is", "• How long you have known them", "• What qualities they possess", "• And explain why they inspire you"]
+  },
+  {
+    topic: "Describe a new skill you would like to learn in the future",
+    bullets: ["• What the skill is", "• How you plan to learn it", "• How difficult it might be", "• And explain why you want to learn it"]
+  },
+  {
+    topic: "Describe a traditional event or festival in your country",
+    bullets: ["• What the festival is called", "• When and where it takes place", "• How people celebrate it", "• And explain why it is important to your culture"]
+  }
+];
+
+let cueTimerInterval = null;
+function startCueTimer(seconds, label){
+  if(cueTimerInterval) clearInterval(cueTimerInterval);
+  let rem = seconds;
+  const display = document.getElementById('cueTimerDisplay');
+  if(display) display.textContent = `${label}: ${rem}s`;
+
+  cueTimerInterval = setInterval(() => {
+    rem--;
+    if(display) display.textContent = `${label}: ${rem}s`;
+    if(rem <= 0){
+      clearInterval(cueTimerInterval);
+      cueTimerInterval = null;
+      if(display) display.textContent = `${label} Time Up! 🎉`;
+    }
+  }, 1000);
+}
 
 /* Pomodoro Timer */
 let pomInterval = null, pomRemaining = 0, pomMode = 'work';
@@ -1599,6 +2211,8 @@ function formatTime(s){ return `${String(Math.floor(s/60)).padStart(2,'0')}:${St
 function updatePomDisplay(){ document.getElementById('pomDisplay').textContent = formatTime(pomRemaining); }
 document.getElementById('pomodoroBtn').addEventListener('click', () => document.getElementById('pomodoroModal').classList.remove('hidden'));
 document.getElementById('closePom').addEventListener('click', () => document.getElementById('pomodoroModal').classList.add('hidden'));
+document.getElementById('closePomX')?.addEventListener('click', () => document.getElementById('pomodoroModal').classList.add('hidden'));
+
 document.getElementById('pomStart').addEventListener('click', () => {
   const work = Math.max(1, Number(document.getElementById('pomWork').value)||25);
   const br = Math.max(1, Number(document.getElementById('pomBreak').value)||5);
