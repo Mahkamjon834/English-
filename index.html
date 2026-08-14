@@ -192,7 +192,7 @@
     </div>
   </nav>
 
-  <!-- Hero: ring + streak + IELTS Band + Exam Countdown (Visible on Home dashboard) -->
+  <!-- Hero: ring + streak + IELTS Band (Visible on Home dashboard) -->
   <section id="heroSection" class="glass rounded-3xl shadow-glass p-5 sm:p-7 mb-6">
     <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
       
@@ -234,14 +234,7 @@
             </div>
           </div>
 
-          <!-- Exam Countdown Badge -->
-          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-rose-500/15 border border-rose-500/30" id="examCountdownBadge">
-            <span class="text-base">⏳</span>
-            <div>
-              <div class="text-[10px] text-rose-400 font-bold uppercase tracking-wider">Exam Countdown</div>
-              <div class="font-mono font-700 text-sm text-rose-400" id="examDaysLeft">Set date in Profile</div>
-            </div>
-          </div>
+
         </div>
 
         <p class="text-xs text-ink-900/60 dark:text-paper-100/60">Daily target status — complete parts across modules to reach 100%.</p>
@@ -1620,19 +1613,7 @@ function renderHero(){
   const bandEl = document.getElementById('estimatedOverallBand');
   if(bandEl) bandEl.textContent = `Band ${estBand}`;
 
-  // Exam Countdown
-  const countdownEl = document.getElementById('examDaysLeft');
-  if(countdownEl) {
-    if(state.profile && state.profile.examDate) {
-      const diffTime = new Date(state.profile.examDate + 'T00:00:00') - new Date();
-      const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if(days > 0) countdownEl.textContent = `${days} days left`;
-      else if(days === 0) countdownEl.textContent = `EXAM TODAY! 🔥`;
-      else countdownEl.textContent = `Passed (${Math.abs(days)}d ago)`;
-    } else {
-      countdownEl.textContent = 'Set date in Profile';
-    }
-  }
+
 
   // Mini Target Badges
   const mini = document.getElementById('miniTargets');
